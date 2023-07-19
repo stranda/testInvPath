@@ -1,0 +1,21 @@
+###
+### make a gtypes object from fasta data and some meta data
+###
+
+fasta2gin = function(fas=NULL,indmeta=NULL)
+    {
+###        fas = "../data/Uwai_141inds_2loc.fas"
+###        mn =  "../data/Uwai_141inds.meta.csv"
+        mn=indmeta
+        lmeta = read.csv(mn)
+        rownames(lmeta)=lmeta$indID
+        fas=read.fasta(fas)
+        g = strataG::sequence2gtypes(fas)
+        
+        sv = lmeta$popID
+        names(sv)=rownames(lmeta)
+        strataG::setStrata(g) = sv
+
+        g
+
+    }

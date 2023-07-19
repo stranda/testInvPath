@@ -1,0 +1,11 @@
+Package: testInvPath
+Type: Package
+Title: System for testing invasion hypotheses
+Version: 1.0
+Date: 2023-07-17
+Author: Allan Strand
+Maintainer: Allan Strand <stranda@cofc.edu>
+Description: Takes genetic data for a species that could have co-invaded with Crassostrea gigas and tests that possibility against shipping.
+License: GPL-3
+Imports: strataG
+RoxygenNote: 7.2.3
