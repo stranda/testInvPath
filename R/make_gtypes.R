@@ -9,7 +9,7 @@ fasta2gin = function(fas=NULL,indmeta=NULL)
         mn=indmeta
         lmeta = read.csv(mn)
         rownames(lmeta)=lmeta$indID
-        fas=read.fasta(fas)
+        fas=strataG::read.fasta(fas)
         g = strataG::sequence2gtypes(fas)
         
         sv = lmeta$popID

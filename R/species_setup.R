@@ -33,8 +33,8 @@ species_setup <- function(root="test",fas=NULL,indmeta=NULL,genofile=NULL,mname=
                         else stop(paste("cant find fasta file ",indmeta))                    
         }
         g=fasta2gin(fas,indmeta)
-        genofile=paste0("gtype_from_fasta.RDS")
-        saveRDS(file=genofile,g)
+        genofile=paste0(root,"/","gtype_from_fasta.RDS")
+        saveRDS(file=paste0(genofile),g)
     }
     
     if (!is.null(genofile))
@@ -51,7 +51,7 @@ species_setup <- function(root="test",fas=NULL,indmeta=NULL,genofile=NULL,mname=
         if (file.exists(paste0(root,"/",mname)))
             mname=paste0(root,"/",mname)
         else if (file.exists(paste0(root,"/data/",mname)))
-            mname=paste0(root,"/data/",mname)
+            mname=paste0(mname)
         else stop(paste("cant find meta file ",mname))
     }
 
@@ -66,6 +66,9 @@ species_setup <- function(root="test",fas=NULL,indmeta=NULL,genofile=NULL,mname=
         
     } else stop("problems with metafile, missing columns pop and source")
 
+    gt=gigasTblML()
+    itrs = unique(colnames(gt)[colnames(gt)%in%meta1$source])
+    srcs = unique(rownames(gt)[rownames(gt)%in%meta1$source])
 
     if (!dir.exists(newdir)) dir.create(newdir)
     if (!dir.exists(paste0(newdir,"/data"))) dir.create(paste0(newdir,"/data"))
@@ -79,7 +82,7 @@ species_setup <- function(root="test",fas=NULL,indmeta=NULL,genofile=NULL,mname=
     file.copy(genofile,paste0(newdir,"/data/gin.RDS"))
     file.copy(genofile,paste0(newdir,"/data/"))
 
-
+    
     if (!is.null(fas)) {
         file.copy(fas,paste0(newdir,"/data/"))
         file.copy(indmeta,paste0(newdir,"/data/"))
@@ -94,21 +97,32 @@ file.copy(paste0(system.file(package="testInvPath","skeletons"),"/runReps.R"),pa
     ########datafiles file
     cat(file=paste0(newdir,"/src/datafiles.R"),append=F,"#These are the relative paths to the data files\n\n")
     if (!is.null(fas)){
+
         cat(file=paste0(newdir,"/src/datafiles.R"),append=T,paste0("fas='data/",basename(fas),"' #fasta source\n\n"))
-    cat(file=paste0(newdir,"/src/datafiles.R"),append=T,paste0("indmeta='data/",basename(indmeta),"' #individual-level metadata (strata assignment, if needed)\n\n")) 
+        cat(file=paste0(newdir,"/src/datafiles.R"),append=T,paste0("indmeta='data/",basename(indmeta),"' #individual-level metadata (strata assignment, if needed)\n\n"))
+
     } else {
         cat(file=paste0(newdir,"/src/datafiles.R"),append=T,paste0("fas=NULL  #fasta source (NULL=none)\n"))
         cat(file=paste0(newdir,"/src/datafiles.R"),append=T,paste0("indmeta=NULL\n\n")) 
 
         }
+
     cat(file=paste0(newdir,"/src/datafiles.R"),append=T,paste0("genofile='data/",basename(genofile),"' #RDS file with gtypes inside\n\n"))
     cat(file=paste0(newdir,"/src/datafiles.R"),append=T,paste0("mname='data/",basename(mname),"' #name of the metafile for  pops\n\n"))
+
     cat(file=paste0(newdir,"/src/datafiles.R"),append=T,paste0("abspath='",newdir,"' # absolute path to species, relative paths above are within this parent directory.  Change this if needed\n\n"))
+
+
     cat(file=paste0(newdir,"/src/datafiles.R"),append=T,paste0("######## sources and introductions\n\n"))
-        cat(file=paste0(newdir,"/src/datafiles.R"),append=T,paste0("sources=",capture.output(dput(rownames(gtbl)[rownames(gtbl)%in%meta1$source],file=""))," # sources in the metadata and in the intro matrices\n\n"))
+
+    cat(file=paste0(newdir,"/src/datafiles.R"),
+        append=T,
+        paste0("sources=",capture.output(dput(srcs,file=""))," # sources in the metadata and in the intro matrices\n\n"))
+
         cat(file=paste0(newdir,"/src/datafiles.R"),append=T,paste0("sources=sources[sources!='nonSource'] # comment out to include nonSource\n\n"))
 
-    cat(file=paste0(newdir,"/src/datafiles.R"),append=T,paste0("intros=",capture.output(dput(colnames(gtbl)[colnames(gtbl)%in%meta1$source],file=""))," # introductions in the metadata and in the intro matrices\n\n"))
+
+    cat(file=paste0(newdir,"/src/datafiles.R"),append=T,paste0("intros=",capture.output(dput(itrs,file=""))," # introductions in the metadata and in the intro matrices\n\n"))
 
     cat(file=paste0(newdir,"/src/datafiles.R"),append=T,paste0("dataType='",dataType,"' #type of genetic data\n\n"))
 
