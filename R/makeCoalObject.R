@@ -59,9 +59,9 @@ createCoalObject <- function(params,priors,demeN=0,demeI=0)
     }
     
     itbl = params$introTbls[[priors$introModel]]
-    print(dim(itbl))
+#    print(dim(itbl))
     itbl = apply(itbl,2,function(x){x/sum(x)})
-    print(dim(itbl))
+#    print(dim(itbl))
     itbl[is.na(itbl)]=0
     
     poptbl = as.table(params$samples[,2])
@@ -87,8 +87,8 @@ createCoalObject <- function(params,priors,demeN=0,demeI=0)
 #### starting to sort out events
 ### make two lists, one has the sampled deme ids of the intropops and the other, native pops
 
-    print(itbl)
-    print(colnames(itbl))
+#    print(itbl)
+#    print(colnames(itbl))
     ipops = lapply(colnames(itbl),function(r)
     {
         meta$idnum[meta$source==r]
@@ -100,10 +100,10 @@ createCoalObject <- function(params,priors,demeN=0,demeI=0)
         meta$idnum[meta$source==r]
     })
     names(npops)=rownames(itbl)
-print("printing ipops")
-    print(ipops)
-print("printing npops")
-    print(npops)
+#print("printing ipops")
+#    print(ipops)
+#print("printing npops")
+#    print(npops)
     
 ###events in the native range within regions
     nEventsWInReg = data.frame(do.call(rbind,lapply(names(npops),function(r)
@@ -123,22 +123,22 @@ print("printing npops")
         }
     })))
 ###events in the native range among regions
-    print("this far 1")
-    print("about to print npops")
-    print(npops)
+#    print("this far 1")
+#    print("about to print npops")
+#    print(npops)
     nEventsAmongReg=data.frame(do.call(rbind,lapply(names(npops),function(r)
     {
-        print(r)
+#        print(r)
         src = npops[[r]][1] #each region has already coalesced into the first deme, now these coalesce
-        print(npops)
-        print(src)
+#        print(npops)
+#        print(src)
         nrt=params$native_range_topology
-        print(nrt)
-        print(class(nrt))
+#        print(nrt)
+#        print(class(nrt))
         if (max(nrt[,r])>0)
         {
             sink=npops[[names(which(nrt[,r]>0))]][1]
-            print(paste(src,sink))
+#            print(paste(src,sink))
             timeflag=nrt[names(which(nrt[,r]>0)),r]
             ret1=c(c(priors$t1,priors$t2,priors$t3)[timeflag],  ##this chooses the correct time for the particular coalescence...
                    src, sink, 1,
@@ -154,8 +154,8 @@ print("printing npops")
         }
     })))
     nEventsAmongReg = nEventsAmongReg[order(nEventsAmongReg[,1]),]
-    print("this far")
-    print(nEventsAmongReg)
+#    print("this far")
+#    print(nEventsAmongReg)
     
     iEventsIntro = do.call(rbind,lapply(names(ipops),function(r)
     {
