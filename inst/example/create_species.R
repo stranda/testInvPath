@@ -3,6 +3,8 @@
 #### taxon.  The source material is in the gigas-popgen github repo
 ####
 library(testInvPath)
+
+
 ##Undaria
 species_setup(root="/home/astrand/GoogleDrive/data/Oyster/gigas-popgen/ABC_input/Undaria_pinnatifida/",fas="Uwai_141inds_2loc.fas",indmeta="Uwai_141inds.meta.csv",mname="upinn_meta_updated.csv",newdir="/home/astrand/tmp/upinn",species="Undaria_pinnatifida",dataType="sequence",fsc_exec="fsc27")
 
@@ -45,13 +47,25 @@ species_setup(root="/home/astrand/GoogleDrive/data/Oyster/gigas-popgen/ABC_input
 
 ##Gracillaria_vermiculophylla_SNP
 
-species_setup(root="/home/astrand/GoogleDrive/data/Oyster/gigas-popgen/ABC_input/Gracilaria_vermiculophylla_SNP/",genofile="gverm_snps.RDS",mname="meta-SNP.pops_edited.V2.csv",newdir="/home/astrand/tmp/gvermSNP",species="Gracilaria_vermiculophylla_SNP",dataType="snp",fsc_exec="fsc27")
+species_setup(root="/home/astrand/GoogleDrive/data/Oyster/gigas-popgen/ABC_input/Gracilaria_vermiculophylla_SNP/",genofile="gverm_snps_229ind_1000loci.RDS",mname="meta-SNP.pops_edited.V2.csv",newdir="/home/astrand/tmp/gvermSNP",species="Gracilaria_vermiculophylla_SNP",dataType="snp",fsc_exec="fsc27",nativeTopology= matrix(c(0,0,0,0,  #kag
+                                      0,0,0,1,  #hon
+                                      2,3,0,0,  #tok
+                                      0,0,0,0), #hok
+                                          byrow=T,nrow=4,
+                                          dimnames=list(c("kag","hon","tok","hok"),
+                                                        c("kag","hon","tok","hok"))
+                                          ))
 
 
 
 ##Gracillaria_vermiculophylla_mtDNA
 
 species_setup(root="/home/astrand/GoogleDrive/data/Oyster/gigas-popgen/ABC_input/Gracilaria_vermiculophylla_mtDNA/",fas="gvermMTDNA.606ind.fas",indmeta="gvermMTDNA.606ind.csv",mname="gverm_meta.csv",newdir="/home/astrand/tmp/gvermMTDNA",species="Gracilaria_vermiculophylla_mtDNA",dataType="sequence",fsc_exec="fsc27")
+
+
+##
+
+species_setup(root="/home/astrand/GoogleDrive/data/Oyster/gigas-popgen/ABC_input/Palaemon_macrodactylus/",fas="Palaemon_238inds.fas",indmeta="Palaemon_238inds_meta.csv",mname="pala_meta.csv",newdir="/home/astrand/tmp/pala",species="Palaemon_macrodactylus",dataType="sequence",fsc_exec="fsc27")
 
 
 

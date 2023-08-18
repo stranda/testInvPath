@@ -93,8 +93,9 @@ summary_stats_seq=function(gin,meta)
     pwStruct.Region=sapply(pairwiseTest(nosingles(gin),nrep=0,quiet=T),function(x){y=x$result[3,1];names(y)=paste(names(x$strata.freq),collapse=".");y})
     names(pwStruct.Region)=paste0(names(pwStruct.Region),".PhiST")
         
-    c( overallDiv,  withinPopDiv, withinPi,  amongPi, overallHapDiv,
-      withinPopHapDiv, overallStruct, pwStruct,withinRegionHapDiv, pwStruct.Region)
+    r = c( overallDiv,  withinPopDiv, withinPi,  amongPi, overallHapDiv,
+          withinPopHapDiv, overallStruct, pwStruct,withinRegionHapDiv, pwStruct.Region)
+    r[order(names(r))]
 }
 
 
@@ -151,7 +152,6 @@ summary_stats_sfs=function(gin,meta)
     c(unlist(sfs.src))
 }
 
-
 ###
 ### summary stat calculator for snps
 ###
@@ -171,12 +171,17 @@ summary_stats_trad = function(gin,meta)
         longpops=sapply(strsplit(getIndNames(gin),"_"),function(x) x[1])
         print("rightslash absent in Indnames")
     }
-    print(longpops)
+#    print(longpops)
     names(longpops) = getIndNames(gin)
     orig.strata = getStrata(gin)
     setStrata(gin) = longpops
     popHet = with(heterozygosity(gin,by.strata=T),aggregate(cbind(exptd.het=exptd.het),by=list(stratum=stratum),mean))[,2]
     names(popHet) = paste0(meta$pop,"Het")
+    popPW=pairwiseTest(gin,nrep=0,stats="Fst_prime",quiet=T)
+    popPair=sapply(popPW,function(x) x$result["Fst",1])
+    names(popPair) = sapply(popPW,function(x) paste(names(x$strata.freq),collapse="_"))
+    
+
     
     intro = meta[longpops,"intro"]
     names(intro) = getIndNames(gin)
@@ -199,9 +204,9 @@ summary_stats_trad = function(gin,meta)
     regPW=pairwiseTest(gin,nrep=0,stats="Fst_prime",quiet=T)
     regPair=sapply(regPW,function(x) x$result["Fst",1])
     names(regPair) = sapply(regPW,function(x) paste(names(x$strata.freq),collapse="_"))
-    c(overallHet, ostruct,popHet,intro_vs_nativeHet, intro_vs_nativeOverall,
+    r=c(overallHet, ostruct,popHet,popPair,intro_vs_nativeHet, intro_vs_nativeOverall,
       intro_vs_nativePair,regHet,regOverall,regPair)
-
+    r[order(names(r))]
 }
 
 ###use the trad version for production
@@ -364,6 +369,83 @@ c(overallHet,popHet,intro_vs_nativeHet,regHet,reg2Het,
 }
 
 
-######
+#' Summary Statistics for Microsatellites
+#'
+#' This function computes various summary statistics related to microsatellite data.
+#'
+#' @param gin Genetic input data in strataG gtypes format
+#' @param meta Metadata related to the `gin` input.
+#'
+#' @details 
+#' The function computes multiple summary statistics such as overall heterozygosity, 
+#' population-specific heterozygosity, pairwise population statistics, and so on.
+#' The method to extract population information from `gin` is also determined within the function based on 
+#' the presence of a specific pattern in the individual names.
+#'
+#' @return A vector containing various summary statistics. The output is ordered to ensure comparability 
+#' between original and simulated statistics.
+#'
+#' @seealso 
+#' \code{\link{heterozygosity}}, \code{\link{overallTest}}, \code{\link{pairwiseTest}}, \code{\link{mRatio}}
+#'
+summary_stats_microsatellite = function(gin,meta)
+{
 
-summary_stats_microsatellite = summary_stats.new
+    meta.orig=meta
+    rownames(meta)=meta$longpop
+    overallHet = mean(heterozygosity(gin)[,2])
+    names(overallHet)="overallHet"
+
+    if (sum(grepl("/",getIndNames(gin)))==length(getIndNames(gin)))
+    {
+        longpops=getStrata(gin)
+    } else {
+        longpops=gsub("[0-9]+","",getIndNames(gin))#sapply(strsplit(getIndNames(gin),"_"),function(x) x[3])
+    }
+    
+
+names(longpops) = getIndNames(gin)
+orig.strata = getStrata(gin)
+setStrata(gin) = longpops
+popHet = with(heterozygosity(gin,by.strata=T),aggregate(cbind(exptd.het=exptd.het),by=list(stratum=stratum),mean))[,2]
+
+names(popHet) = paste0(meta$pop,"Het")
+
+popOverall = overallTest(gin,nrep=0)$result[,1]
+names(popOverall) = paste0(names(popOverall),".pop")
+popPW=pairwiseTest(gin,nrep=0,stats="Fst_prime",quiet=T)
+popPair=sapply(popPW,function(x) x$result["Fst",1])
+names(popPair) = sapply(popPW,function(x) paste(names(x$strata.freq),collapse="_"))
+    
+intro = meta[longpops,"intro"]
+names(intro) = getIndNames(gin)
+setStrata(gin) = intro
+intro_vs_nativeHet = with(heterozygosity(gin,by.strata=T),aggregate(cbind(exptd.het=exptd.het),by=list(stratum=stratum),mean))[,2]
+names(intro_vs_nativeHet) = c("nativeHet","introducedHet")
+intro_vs_nativeOverall = overallTest(gin,nrep=0)$result[,1]
+names(intro_vs_nativeOverall) = paste0(names(intro_vs_nativeOverall),".intro")
+introPW=pairwiseTest(gin,nrep=0,stats="Fst_prime",quiet=T)
+intro_vs_nativePair=sapply(introPW,function(x) x$result["Fst",1])
+names(intro_vs_nativePair) = sapply(introPW,function(x) paste(names(x$strata.freq),collapse="_"))
+
+reg=meta[longpops,"source"]
+names(reg) = getIndNames(gin)
+setStrata(gin) = reg
+regHet = with(heterozygosity(gin,by.strata=T),aggregate(cbind(exptd.het=exptd.het),by=list(stratum=stratum),mean))[,2]
+names(regHet) =  unique(reg)
+regM = with(mRatio(gin,by.strata=T),aggregate(cbind(m.ratio=m.ratio),by=list(stratum=stratum),mean,na.rm=T))[,2]
+names(regM) =  unique(reg)
+regOverall = overallTest(gin,nrep=0)$result[,1]
+names(regOverall) = paste0(names(regOverall),".reg")
+regPW=pairwiseTest(gin,nrep=0,stats="Fst_prime",quiet=T)
+regPair=sapply(regPW,function(x) x$result["Fst",1])
+names(regPair) = sapply(regPW,function(x) paste(names(x$strata.freq),collapse="_"))
+
+    rv=c(overallHet,popHet,intro_vs_nativeHet,intro_vs_nativeOverall,
+         intro_vs_nativePair,regHet,regM,regOverall,regPair,popPair)
+    rv=rv[order(names(rv))]  #make sure that the original and simulated summary stats are directly comparable
+    rv
+}
+
+
+

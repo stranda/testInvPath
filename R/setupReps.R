@@ -2,6 +2,7 @@
 #' 
 #' @param mname name of metadata file for pops
 #' @param genofile name of gtypes file
+#' @param native_range_topology if null, use the output of nativeHistory() otherwise a matrix encoding the topology and relative times in the native regions
 #' @param params a list of parameters that come from mainparams()
 #'
 #' @description This function takes the meta data and the geentic data that are placed
@@ -12,7 +13,7 @@
 #' 
 #' @export
 
-setupReps = function(mname,genofile,
+setupReps = function(mname,genofile,native_range_topology=NULL,
                   params = mainparams())
 {
     meta1=read.csv(mname)
@@ -41,8 +42,10 @@ setupReps = function(mname,genofile,
     meta$intro = (meta$source %in% params$intros) 
     meta = meta[,c("longpop","intro","source","idnum","pop")]
 
-    native_range_topology=nativeHistory(sources=sources)
-
+    if (is.null(native_range_topology))
+        native_range_topology=nativeHistory(sources=sources)
+    else if ((!all(sources %in% colnames(native_range_topology))) | (!all(colnames(native_range_topology %in% sources)))) stop("sources and columns of native_range_topology inconsistent")
+             
     introTbls = list(shipTbl30=shipTbl30(intros,sources),
                      shipTbl60=shipTbl60(intros,sources),
                      gigasTblAdmix=gigasTblAdmix(intros,sources),

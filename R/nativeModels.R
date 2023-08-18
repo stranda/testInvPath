@@ -20,7 +20,9 @@ nativeHistory = function(sources=c("kag","hon","sea","tok","hok"),
                                           )
                                )
 {
-    newtop=topology[which(rownames(topology)%in%sources),which(rownames(topology)%in%sources)]
+    newtop=topology[which(rownames(topology)%in%sources),which(colnames(topology)%in%sources)]
     if (min(colSums(newtop)>0)) {stop("no root for native topology, need a column in the matrix with all zeros")}
+    if (sum(colSums(newtop)==0)>1) {
+        stop(paste("there are multiple places in the native topology where lineages do not connect:",paste(colnames(newtop)[colSums(newtop)==0],collapse=" ,")))}
     newtop
 }

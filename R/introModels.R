@@ -19,7 +19,19 @@ shipTbl30 <- function(intros=NULL,sources=NULL)
                     d = c("EU", "NZ", "PNW", "Cali")), class = "table")
     if (is.null(intros)|is.null(sources))
         m
-    else m[which(rownames(m)%in%sources),which(colnames(m)%in%intros)]
+    else
+    {
+        tm=m[which(rownames(m)%in%sources),which(colnames(m)%in%intros)]
+        if (length(intros)==1)
+        {
+            rn=names(tm)
+            tm=matrix(tm,ncol=1)
+            rownames(tm)=rn
+            colnames(tm)=intros
+            tm=as.table(tm)
+        }
+        tm
+    }
 }
 
 
@@ -41,7 +53,18 @@ shipTbl60 <- function(intros=NULL,sources=NULL)
 
     if (is.null(intros)|is.null(sources))
         m
-    else m[which(rownames(m)%in%sources),which(colnames(m)%in%intros)]
+    else     {
+        tm=m[which(rownames(m)%in%sources),which(colnames(m)%in%intros)]
+        if (length(intros)==1)
+        {
+            rn=names(tm)
+            tm=matrix(tm,ncol=1)
+            rownames(tm)=rn
+            colnames(tm)=intros
+            tm=as.table(tm)
+        }
+        tm
+    }
 }
 
 
@@ -71,7 +94,18 @@ gigasTblAdmix = function(intros=NULL,sources=NULL)
     m=as.table(cbind(m,EU=rowSums(m[,3:4])))
     if (is.null(intros)|is.null(sources))
         m
-    else m[which(rownames(m)%in%sources),which(colnames(m)%in%intros)]
+    else     {
+        tm=m[which(rownames(m)%in%sources),which(colnames(m)%in%intros)]
+        if (length(intros)==1)
+        {
+            rn=names(tm)
+            tm=matrix(tm,ncol=1)
+            rownames(tm)=rn
+            colnames(tm)=intros
+            tm=as.table(tm)
+        }
+        tm
+    }
 }
 
 
@@ -95,8 +129,18 @@ gigasTblML <-function(intros=NULL,sources=NULL)
 m=cbind(m,EU=rowSums(m[,3:4]))
 if (is.null(intros)|is.null(sources))
     m
-else m[which(rownames(m)%in%sources),which(colnames(m)%in%intros)]
-
+else     {
+        tm=m[which(rownames(m)%in%sources),which(colnames(m)%in%intros)]
+        if (length(intros)==1)
+        {
+            rn=names(tm)
+            tm=matrix(tm,ncol=1)
+            rownames(tm)=rn
+            colnames(tm)=intros
+            tm=as.table(tm)
+        }
+        tm
+    }
 }
 
 #' shipping no longer than 30 days from sources
@@ -116,6 +160,17 @@ equalSourceTbl <- function(intros=NULL,sources=NULL)
                     d = c("EU", "NZ", "PNW", "Cali")), class = "table")
     if (is.null(intros)|is.null(sources))
         m
-    else m[which(rownames(m)%in%sources),which(colnames(m)%in%intros)]
+    else     {
+        tm=m[which(rownames(m)%in%sources),which(colnames(m)%in%intros)]
+        if (length(intros)==1)
+        {
+            rn=names(tm)
+            tm=matrix(tm,ncol=1)
+            rownames(tm)=rn
+            colnames(tm)=intros
+            tm=as.table(tm)
+        }
+        tm
+    }
 }
 

@@ -15,6 +15,7 @@ source("datafiles.R") #defines mname, genofile, sources and intros
 
 params = setupReps(mname=paste0(abspath,"/",mname),
                    genofile=paste0(abspath,"/",genofile),
+                   native_range_topology=nativeTopology, #present in datafiles.R
                    mainparams(cores=1,
                               nreps=1,
                               demeN=0,
@@ -44,7 +45,8 @@ rdf = do.call(rbind,mclapply(1:params$nreps,mc.cores=params$cores,function(i)
         runout=fscRun(simp,exec=fsc_exec,max.snps=1000,dna.to.snp=T)
         res=fsc2gtypes(runout,marker="snp") 
     } else if (tolower(params$dataType)=="microsatellite") {
-        res=fsc2gtypes(fscRun(simp,exec=fsc_exec),marker="microsat")
+        runout=fscRun(simp,exec=fsc_exec)
+        res=fsc2gtypes(runout,marker="microsat")
     }  else stop("incorrect data type specified in runreps")
 
     fscCleanup(runout$label,runout$folder) #remove fsc files

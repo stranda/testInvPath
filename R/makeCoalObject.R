@@ -58,8 +58,12 @@ createCoalObject <- function(params,priors,demeN=0,demeI=0)
         meta=rbind(meta,madd)
     }
     
-    itbl = as.table(params$introTbls[[priors$introModel]])
+    itbl = params$introTbls[[priors$introModel]]
+    print(dim(itbl))
     itbl = apply(itbl,2,function(x){x/sum(x)})
+    print(dim(itbl))
+    itbl[is.na(itbl)]=0
+    
     poptbl = as.table(params$samples[,2])
     names(poptbl)=params$samples[,1]
     if (length(poptbl)!=sum(!grepl("ghost",meta$longpop)))
@@ -76,13 +80,15 @@ createCoalObject <- function(params,priors,demeN=0,demeI=0)
                 sample.size=poptbl[p],
                 growth=ifelse(meta$intro[meta$longpop==p],priors$IntroGrow,0))
     }
-    )),ploidy=1)
+    )),ploidy=ifelse(params$dataType=="sequence",1,2))
     demes$deme.name = names(poptbl)
 
     
 #### starting to sort out events
 ### make two lists, one has the sampled deme ids of the intropops and the other, native pops
 
+    print(itbl)
+    print(colnames(itbl))
     ipops = lapply(colnames(itbl),function(r)
     {
         meta$idnum[meta$source==r]
@@ -94,7 +100,11 @@ createCoalObject <- function(params,priors,demeN=0,demeI=0)
         meta$idnum[meta$source==r]
     })
     names(npops)=rownames(itbl)
-
+print("printing ipops")
+    print(ipops)
+print("printing npops")
+    print(npops)
+    
 ###events in the native range within regions
     nEventsWInReg = data.frame(do.call(rbind,lapply(names(npops),function(r)
     {
@@ -113,11 +123,18 @@ createCoalObject <- function(params,priors,demeN=0,demeI=0)
         }
     })))
 ###events in the native range among regions
+    print("this far 1")
+    print("about to print npops")
+    print(npops)
     nEventsAmongReg=data.frame(do.call(rbind,lapply(names(npops),function(r)
     {
         print(r)
         src = npops[[r]][1] #each region has already coalesced into the first deme, now these coalesce
+        print(npops)
+        print(src)
         nrt=params$native_range_topology
+        print(nrt)
+        print(class(nrt))
         if (max(nrt[,r])>0)
         {
             sink=npops[[names(which(nrt[,r]>0))]][1]
@@ -137,7 +154,8 @@ createCoalObject <- function(params,priors,demeN=0,demeI=0)
         }
     })))
     nEventsAmongReg = nEventsAmongReg[order(nEventsAmongReg[,1]),]
-
+    print("this far")
+    print(nEventsAmongReg)
     
     iEventsIntro = do.call(rbind,lapply(names(ipops),function(r)
     {
@@ -223,10 +241,43 @@ createCoalObject <- function(params,priors,demeN=0,demeI=0)
     
     migration = strataG::fscSettingsMigration(mig.mat,mig.mat.native,basemat)
 
-    genetics = strataG::fscSettingsGenetics(
-        strataG::fscBlock_dna(sequence.length=908,mut.rate=priors$mut_rate),
-        strataG::fscBlock_dna(sequence.length=908,mut.rate=priors$mut_rate),
-        num.chrom=NULL)
+    genetics <- switch(params$dataType,
+                 "sequence" = {
+                   # simulate DNA sequence
+                   strataG::fscSettingsGenetics(
+                                strataG::fscBlock_dna(sequence.length=908,mut.rate=priors$mut_rate),
+                                strataG::fscBlock_dna(sequence.length=908,mut.rate=priors$mut_rate),
+                                num.chrom=NULL)
+                 },
+                 "snp" = {
+                   # simulate snps
+                     strataG::fscSettingsGenetics(
+                                  strataG::fscBlock_snp(sequence.length=1,
+                                                        mut.rate=priors$mut_rate),
+                                  num.chrom=1000)
+                 },
+                 "microsatellite" = {
+                     strataG::fscSettingsGenetics(
+                         strataG::fscBlock_microsat(1,priors$mut_rate,0,chromosome=1),
+                         strataG::fscBlock_microsat(1,priors$mut_rate,0,chromosome=2),
+                         strataG::fscBlock_microsat(1,priors$mut_rate,0,chromosome=3),
+                         strataG::fscBlock_microsat(1,priors$mut_rate,0,chromosome=4),
+                         strataG::fscBlock_microsat(1,priors$mut_rate,0,chromosome=5),
+                         strataG::fscBlock_microsat(1,priors$mut_rate,0,chromosome=6),
+                         strataG::fscBlock_microsat(1,priors$mut_rate,0,chromosome=7),
+                         strataG::fscBlock_microsat(1,priors$mut_rate,0,chromosome=8),
+                         strataG::fscBlock_microsat(1,priors$mut_rate,0,chromosome=9),
+                         strataG::fscBlock_microsat(1,priors$mut_rate,0,chromosome=10)
+                     )
+                 },
+                 {
+                   # Default action in case no match is found
+                   stop("params$dataType must be 'sequence', 'snp', or 'microsatellite'")
+                 }
+)
+
+##now assemble all of the components into a single set of parameters and return
+
     strataG::fscWrite(demes,genetics,migration,events)
 }
 
