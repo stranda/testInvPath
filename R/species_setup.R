@@ -77,6 +77,7 @@ species_setup <- function(root="test",fas=NULL,indmeta=NULL,genofile=NULL,mname=
     if (!dir.exists(paste0(newdir,"/results"))) dir.create(paste0(newdir,"/results"))
     if (!dir.exists(paste0(newdir,"/logs"))) dir.create(paste0(newdir,"/logs"))
     if (!dir.exists(paste0(newdir,"/gathered"))) dir.create(paste0(newdir,"/gathered"))
+    if (!dir.exists(paste0(newdir,"/archivedCSV"))) dir.create(paste0(newdir,"/archivedCSV"))
 
     file.copy(mname,paste0(newdir,"/data/metadata.csv"))
     file.copy(mname,paste0(newdir,"/data/"))
@@ -91,7 +92,8 @@ species_setup <- function(root="test",fas=NULL,indmeta=NULL,genofile=NULL,mname=
 
     
 ############################  copy some R scripts 
-file.copy(paste0(system.file(package="testInvPath","skeletons"),"/runReps.R"),paste0(newdir,"/src/"))
+    file.copy(paste0(system.file(package="testInvPath","skeletons"),"/runReps.R"),paste0(newdir,"/src/"))
+    file.copy(paste0(system.file(package="testInvPath","skeletons"),"/skeleton.slurm"),paste0(newdir,"/src/simulation.slurm"))
 
 ################### create some files
 

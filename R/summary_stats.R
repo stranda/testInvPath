@@ -388,11 +388,14 @@ c(overallHet,popHet,intro_vs_nativeHet,regHet,reg2Het,
 #' @seealso 
 #' \code{\link{heterozygosity}}, \code{\link{overallTest}}, \code{\link{pairwiseTest}}, \code{\link{mRatio}}
 #'
+
 summary_stats_microsatellite = function(gin,meta)
 {
 
     meta.orig=meta
+    meta$longpop=meta$pop
     rownames(meta)=meta$longpop
+    meta$intro = ifelse(meta$source %in% c("PNW","Cali","EU"),T,F)
     overallHet = mean(heterozygosity(gin)[,2])
     names(overallHet)="overallHet"
 
@@ -413,9 +416,12 @@ names(popHet) = paste0(meta$pop,"Het")
 
 popOverall = overallTest(gin,nrep=0)$result[,1]
 names(popOverall) = paste0(names(popOverall),".pop")
-popPW=pairwiseTest(gin,nrep=0,stats="Fst_prime",quiet=T)
-popPair=sapply(popPW,function(x) x$result["Fst",1])
-names(popPair) = sapply(popPW,function(x) paste(names(x$strata.freq),collapse="_"))
+
+    d=as.matrix(adegenet::dist.genpop(adegenet::genind2genpop(strataG::gtypes2genind(res),quiet=T)))
+    pwdf = unique(t(apply(expand.grid(col=colnames(d),row=rownames(d)),1,sort)))
+    pwdf = pwdf[pwdf[,1]!=pwdf[,2],]
+    colnames(pwdf)=c("col","row")
+    popPair=sapply(1:nrow(pwdf),function(x){r=d[pwdf[x,1],pwdf[x,2]];names(r)=paste0(pwdf[x,1],'_',pwdf[x,2]);r})
     
 intro = meta[longpops,"intro"]
 names(intro) = getIndNames(gin)
@@ -446,6 +452,3 @@ names(regPair) = sapply(regPW,function(x) paste(names(x$strata.freq),collapse="_
     rv=rv[order(names(rv))]  #make sure that the original and simulated summary stats are directly comparable
     rv
 }
-
-
-
