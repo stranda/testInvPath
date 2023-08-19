@@ -417,7 +417,7 @@ names(popHet) = paste0(meta$pop,"Het")
 popOverall = overallTest(gin,nrep=0)$result[,1]
 names(popOverall) = paste0(names(popOverall),".pop")
 
-    d=as.matrix(adegenet::dist.genpop(adegenet::genind2genpop(strataG::gtypes2genind(res),quiet=T)))
+    d=as.matrix(adegenet::dist.genpop(adegenet::genind2genpop(strataG::gtypes2genind(gin),quiet=T)))
     pwdf = unique(t(apply(expand.grid(col=colnames(d),row=rownames(d)),1,sort)))
     pwdf = pwdf[pwdf[,1]!=pwdf[,2],]
     colnames(pwdf)=c("col","row")
