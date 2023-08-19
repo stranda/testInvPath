@@ -8,5 +8,6 @@ Maintainer: Allan Strand <stranda@cofc.edu>
 Description: Takes genetic data for a species that could have co-invaded with Crassostrea gigas and tests that possibility against shipping.
 License: GPL-3
 Imports: strataG,
-	 ape
+	 ape,
+	 adegenet
 RoxygenNote: 7.2.3
