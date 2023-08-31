@@ -1,7 +1,7 @@
 Package: testInvPath
 Type: Package
 Title: System for testing invasion hypotheses
-Version: 1.0.2
+Version: 1.0.3
 Date: 2023-07-17
 Author: Allan Strand
 Maintainer: Allan Strand <stranda@cofc.edu>
@@ -12,5 +12,6 @@ Depends:  strataG,
 	  ape,	
 	  adegenet,
 	  abc,
-	  abcrf
+	  abcrf,
+	  rstream
 RoxygenNote: 7.2.3

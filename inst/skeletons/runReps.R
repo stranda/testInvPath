@@ -8,16 +8,20 @@
 library(parallel)
 library(testInvPath)
 library(strataG)
+library(rstream)
 
 source("datafiles.R") #defines mname, genofile, sources and intros
 
 #first set up the basic parameters for these simulations
 
+s <- new("rstream.mrg32k3a")
+rstream.RNG(s)
+
 params = setupReps(mname=paste0(abspath,"/",mname),
                    genofile=paste0(abspath,"/",genofile),
                    native_range_topology=nativeTopology, #present in datafiles.R
                    mainparams(cores=1,
-                              nreps=1,
+                              nreps=2,
                               demeN=0,
                               demeI=0,
                               sources=sources,
@@ -36,31 +40,23 @@ rdf = do.call(rbind,mclapply(1:params$nreps,mc.cores=params$cores,function(i)
     strt=Sys.time()
     simp=createCoalObject(params,priors,params$demeN,params$demeI)
 
-    tryCatch({
+    if (tolower(params$dataType)=="sequence")
+    {
+        runout=fscRun(simp,exec=fsc_exec,dna.to.snp=F,seed=round(runif(1,1,10000000)))
+        res=fsc2gtypes(runout,marker='dna',as.genotypes=F,concat.dna=F)
+        res=res[,1,] #only have 1 sequence in emprirical data
+    }   else if (tolower(params$dataType)=="snp") {
+        runout=fscRun(simp,exec=fsc_exec,max.snps=1000,dna.to.snp=T,seed=round(runif(1,1,10000000)))
+        res=fsc2gtypes(runout,marker="snp") 
+    } else if (tolower(params$dataType)=="microsatellite") {
+        runout=fscRun(simp,exec=fsc_exec,seed=round(runif(1,1,10000000)))
+        res=fsc2gtypes(runout,marker="microsat")
+    }  else stop("incorrect data type specified in runreps")
 
-        if (tolower(params$dataType) == "sequence") {
-            runout = fscRun(simp, exec = fsc_exec, dna.to.snp = F)
-            res = fsc2gtypes(runout, marker = 'dna', as.genotypes = F, concat.dna = F)
-            res = res[, 1, ] #only have 1 sequence in empirical data
-        } else if (tolower(params$dataType) == "snp") {
-            runout = fscRun(simp, exec = fsc_exec, max.snps = 1000, dna.to.snp = T)
-            res = fsc2gtypes(runout, marker = "snp")
-        } else if (tolower(params$dataType) == "microsatellite") {
-            runout = fscRun(simp, exec = fsc_exec)
-            res = fsc2gtypes(runout, marker = "microsat")
-        } else stop("incorrect data type specified in runreps")
-        
-        fscCleanup(runout$label, runout$folder) #remove fsc files
-        elapsed = Sys.time() - strt
-        print(c(elapsed, unlist(priors)))
-        
-        c(unlist(priors), summary_stats(res, params$meta, dataType))
-        
-    }, error = function(e) {
-        message("An error occurred: ", e$message)
-        return(NULL)
-    })
+    fscCleanup(runout$label,runout$folder) #remove fsc files
+    elapsed=Sys.time()-strt
+    print(c(elapsed,unlist(priors)))
+    c(unlist(priors),summary_stats(res,params$meta,dataType))
 }))
-
 
 write.table(file=paste0("reference",round(runif(1,min=0,max=1000000)),".csv"),row.names=F,sep=",",data.frame(rdf))
