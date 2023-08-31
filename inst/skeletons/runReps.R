@@ -36,23 +36,31 @@ rdf = do.call(rbind,mclapply(1:params$nreps,mc.cores=params$cores,function(i)
     strt=Sys.time()
     simp=createCoalObject(params,priors,params$demeN,params$demeI)
 
-    if (tolower(params$dataType)=="sequence")
-    {
-        runout=fscRun(simp,exec=fsc_exec,dna.to.snp=F)
-        res=fsc2gtypes(runout,marker='dna',as.genotypes=F,concat.dna=F)
-        res=res[,1,] #only have 1 sequence in emprirical data
-    }   else if (tolower(params$dataType)=="snp") {
-        runout=fscRun(simp,exec=fsc_exec,max.snps=1000,dna.to.snp=T)
-        res=fsc2gtypes(runout,marker="snp") 
-    } else if (tolower(params$dataType)=="microsatellite") {
-        runout=fscRun(simp,exec=fsc_exec)
-        res=fsc2gtypes(runout,marker="microsat")
-    }  else stop("incorrect data type specified in runreps")
+    tryCatch({
 
-    fscCleanup(runout$label,runout$folder) #remove fsc files
-    elapsed=Sys.time()-strt
-    print(c(elapsed,unlist(priors)))
-    c(unlist(priors),summary_stats(res,params$meta,dataType))
+        if (tolower(params$dataType) == "sequence") {
+            runout = fscRun(simp, exec = fsc_exec, dna.to.snp = F)
+            res = fsc2gtypes(runout, marker = 'dna', as.genotypes = F, concat.dna = F)
+            res = res[, 1, ] #only have 1 sequence in empirical data
+        } else if (tolower(params$dataType) == "snp") {
+            runout = fscRun(simp, exec = fsc_exec, max.snps = 1000, dna.to.snp = T)
+            res = fsc2gtypes(runout, marker = "snp")
+        } else if (tolower(params$dataType) == "microsatellite") {
+            runout = fscRun(simp, exec = fsc_exec)
+            res = fsc2gtypes(runout, marker = "microsat")
+        } else stop("incorrect data type specified in runreps")
+        
+        fscCleanup(runout$label, runout$folder) #remove fsc files
+        elapsed = Sys.time() - strt
+        print(c(elapsed, unlist(priors)))
+        
+        c(unlist(priors), summary_stats(res, params$meta, dataType))
+        
+    }, error = function(e) {
+        message("An error occurred: ", e$message)
+        return(NULL)
+    })
 }))
+
 
 write.table(file=paste0("reference",round(runif(1,min=0,max=1000000)),".csv"),row.names=F,sep=",",data.frame(rdf))

@@ -30,6 +30,7 @@ summary_stats=function(gin,meta,dataType)
 #' @description calculates a lot of population genetic summary statistics
 summary_stats_seq=function(gin,meta)
 {
+    e = Sys.time()
     ###nucleotide diversity among and within pops
     overallDiv=c(mean(nucleotideDiversity(gin)))
     names(overallDiv)="overallDiversity"
@@ -44,9 +45,14 @@ summary_stats_seq=function(gin,meta)
     withinPi = nd$within$mean
     withinPi[is.na(withinPi)]=0 #replace NA with no diversity
     names(withinPi)=nd$within$stratum
-    
+
+    print("finished within nuc div")
+    print(Sys.time()-e); e=Sys.time()
     amongPi=nd$between$mean
     names(amongPi)=paste0(nd$between$strata.1,".",nd$between$strata.2,".pi")
+
+    print("finished among nuc div")
+    print(Sys.time()-e); e=Sys.time()
     
     ##haplotype diversity
     overallHapDiv=pegas::hap.div(getSequences(gin))
@@ -61,10 +67,29 @@ summary_stats_seq=function(gin,meta)
         ret
     })
     names(withinPopHapDiv)=paste0(names(withinPopDiv),".hap")
+
+    print("finished within hap div")
+    print(Sys.time()-e); e=Sys.time()
+    
+
     overallStruct=overallTest(nosingles(gin),nrep=0)$result[3,1]
-    pwStruct=sapply(pairwiseTest(nosingles(gin),nrep=0,quiet=T),function(x){y=x$result[3,1];names(y)=paste(names(x$strata.freq),collapse=".");y})
     names(overallStruct) = "overallPhiST"
-    names(pwStruct)=paste0(names(pwStruct),".PhiST")
+
+    genin = strataG::gtypes2genind(gin)
+    genp = adegenet::genind2genpop(genin,quiet=T)
+    
+    d=as.matrix(adegenet::dist.genpop(genp,method=3)) #weir cockerham dist 1983
+    
+    pwdf = unique(t(apply(expand.grid(col=colnames(d),row=rownames(d)),1,sort)))
+    pwdf = pwdf[pwdf[,1]!=pwdf[,2],]
+    colnames(pwdf)=c("col","row")
+    pwStruct=sapply(1:nrow(pwdf),function(x){r=d[pwdf[x,1],pwdf[x,2]];names(r)=paste0(pwdf[x,1],'_',pwdf[x,2]);r})
+
+    names(pwStruct)=paste0(names(pwStruct),".dist")
+
+        print("finished among hap div")
+    print(Sys.time()-e); e=Sys.time()
+print("finished pop-level")    
 
 ###source and intro regions
     pops=data.frame(cbind(pop=strataG::getStrata(gin),ind=strataG::getIndNames(gin)))
@@ -80,6 +105,9 @@ summary_stats_seq=function(gin,meta)
         res
     })
     names(withinRegionDiv)=paste0(names(withinRegionDiv),".within")
+    print("finished within region nuc div")
+    print(Sys.time()-e); e=Sys.time()
+
     withinRegionHapDiv=sapply(unique(getStrata(gin)),function(s)
     {
         ret = 0
@@ -90,13 +118,22 @@ summary_stats_seq=function(gin,meta)
         ret
     })
     names(withinRegionHapDiv)=paste0(names(withinRegionDiv),".hap")
+
+    print("finished within region hap div")
+    print(Sys.time()-e); e=Sys.time()
+
     pwStruct.Region=sapply(pairwiseTest(nosingles(gin),nrep=0,quiet=T),function(x){y=x$result[3,1];names(y)=paste(names(x$strata.freq),collapse=".");y})
     names(pwStruct.Region)=paste0(names(pwStruct.Region),".PhiST")
-        
+
+    print("finished among region hap div")
+    print(Sys.time()-e); e=Sys.time()
+
+    
     r = c( overallDiv,  withinPopDiv, withinPi,  amongPi, overallHapDiv,
           withinPopHapDiv, overallStruct, pwStruct,withinRegionHapDiv, pwStruct.Region)
     r[order(names(r))]
 }
+
 
 
 ###takes a strataG 'gtypes' object and returns one with all strata with a single

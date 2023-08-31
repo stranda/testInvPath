@@ -1,8 +1,4 @@
 This folder contains skeletons of functions that run each species simulations on HPC resources
 
-Some have to be modified before use, notably:
-
-mainparam.R
 
 
-In theory you should not have to alter 'makeSimParams.R', it uses the information in the metadata. 

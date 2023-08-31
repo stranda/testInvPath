@@ -278,6 +278,6 @@ createCoalObject <- function(params,priors,demeN=0,demeI=0)
 
 ##now assemble all of the components into a single set of parameters and return
 
-    strataG::fscWrite(demes,genetics,migration,events)
+    strataG::fscWrite(demes,genetics,migration,events,use.wd=T)
 }
 
