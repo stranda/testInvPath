@@ -4,12 +4,14 @@
 \alias{setupReps}
 \title{setup a single simulation rep for abc}
 \usage{
-setupReps(mname, genofile, params = mainparams())
+setupReps(mname, genofile, native_range_topology = NULL, params = mainparams())
 }
 \arguments{
 \item{mname}{name of metadata file for pops}
 
 \item{genofile}{name of gtypes file}
+
+\item{native_range_topology}{if null, use the output of nativeHistory() otherwise a matrix encoding the topology and relative times in the native regions}
 
 \item{params}{a list of parameters that come from mainparams()}
 }

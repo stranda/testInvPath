@@ -13,7 +13,8 @@ mainparams(
   sources = c("kag", "hok", "tok", "hon", "sea"),
   intros = c("PNW", "Cali", "NZ", "Arg", "EU"),
   dataType = "",
-  fsc_exec = ""
+  fsc_exec = "",
+  exclude = "nonSource"
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ mainparams(
 \item{dataType}{the type of genetic data (found in datafile.R)}
 
 \item{fsc_exec}{name of the fastsimcoal executable}
+
+\item{exclude}{source populations to exclude from analysis (ususally nonsource)}
 }
 \value{
 list containing parameters

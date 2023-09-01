@@ -13,6 +13,7 @@ species_setup(
   newdir = NULL,
   dataType = "sequence",
   species = "test",
+  nativeTopology = NULL,
   fsc_exec = "fsc27"
 )
 }
@@ -30,6 +31,8 @@ species_setup(
 \item{dataType}{type of data ("sequence", "snp", "microsatellite")}
 
 \item{species}{the name of the species under consideration}
+
+\item{nativeTopology}{a named matrix describing the topology and relative times for the history of a species in the native range.  If null defaults to output of function nativeHistory()}
 
 \item{fsc_exec}{executable for fastsimcoal}
 }
