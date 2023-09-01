@@ -46,13 +46,13 @@ summary_stats_seq=function(gin,meta)
     withinPi[is.na(withinPi)]=0 #replace NA with no diversity
     names(withinPi)=nd$within$stratum
 
-    print("finished within nuc div")
-    print(Sys.time()-e); e=Sys.time()
+#    print("finished within nuc div")
+#    print(Sys.time()-e); e=Sys.time()
     amongPi=nd$between$mean
     names(amongPi)=paste0(nd$between$strata.1,".",nd$between$strata.2,".pi")
 
-    print("finished among nuc div")
-    print(Sys.time()-e); e=Sys.time()
+#    print("finished among nuc div")
+#    print(Sys.time()-e); e=Sys.time()
     
     ##haplotype diversity
     overallHapDiv=pegas::hap.div(getSequences(gin))
@@ -68,8 +68,8 @@ summary_stats_seq=function(gin,meta)
     })
     names(withinPopHapDiv)=paste0(names(withinPopDiv),".hap")
 
-    print("finished within hap div")
-    print(Sys.time()-e); e=Sys.time()
+#    print("finished within hap div")
+#    print(Sys.time()-e); e=Sys.time()
     
 
     overallStruct=overallTest(nosingles(gin),nrep=0)$result[3,1]
@@ -87,9 +87,9 @@ summary_stats_seq=function(gin,meta)
 
     names(pwStruct)=paste0(names(pwStruct),".dist")
 
-        print("finished among hap div")
-    print(Sys.time()-e); e=Sys.time()
-print("finished pop-level")    
+#        print("finished among hap div")
+#    print(Sys.time()-e); e=Sys.time()
+#print("finished pop-level")    
 
 ###source and intro regions
     pops=data.frame(cbind(pop=strataG::getStrata(gin),ind=strataG::getIndNames(gin)))
@@ -105,8 +105,8 @@ print("finished pop-level")
         res
     })
     names(withinRegionDiv)=paste0(names(withinRegionDiv),".within")
-    print("finished within region nuc div")
-    print(Sys.time()-e); e=Sys.time()
+#    print("finished within region nuc div")
+#    print(Sys.time()-e); e=Sys.time()
 
     withinRegionHapDiv=sapply(unique(getStrata(gin)),function(s)
     {
@@ -119,14 +119,14 @@ print("finished pop-level")
     })
     names(withinRegionHapDiv)=paste0(names(withinRegionDiv),".hap")
 
-    print("finished within region hap div")
-    print(Sys.time()-e); e=Sys.time()
+#    print("finished within region hap div")
+#    print(Sys.time()-e); e=Sys.time()
 
     pwStruct.Region=sapply(pairwiseTest(nosingles(gin),nrep=0,quiet=T),function(x){y=x$result[3,1];names(y)=paste(names(x$strata.freq),collapse=".");y})
     names(pwStruct.Region)=paste0(names(pwStruct.Region),".PhiST")
 
-    print("finished among region hap div")
-    print(Sys.time()-e); e=Sys.time()
+#    print("finished among region hap div")
+#    print(Sys.time()-e); e=Sys.time()
 
     
     r = c( overallDiv,  withinPopDiv, withinPi,  amongPi, overallHapDiv,
