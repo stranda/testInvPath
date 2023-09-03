@@ -55,12 +55,20 @@ make_ref_table = function(genofile, mname, intros, sources, csvpath=".",
         dat=rbind(dat,data.table::fread(paste0(csvpath,'/',f)))
     }
 
+    dat=as.data.frame(dat)
     params=dat[,1:(ncol(dat)-length(obs))]
     ref=dat[,(ncol(params)+1):ncol(dat)]
 
-    ##remove columns that have lots of NAs (or any obs NAs)
-    naCount = apply(ref,2,function(x){sum(is.na(x))})
-    badcols = unique(c(which((naCount/nrow(ref))>na.prop),which(is.na(obs))))
+    ## remove invariant columns from ref
+    invCol=which(apply(ref,2,function(x){var(x)})==0)
+    ref=ref[,-invCol]
+    obs=obs[-invCol]
+
+    
+    ##remove columns that have lots of NAs (or any obs NAs) #same for Inf
+    naCount = apply(ref,2,function(x){sum((!is.finite(x)))})
+    badcols = unique(c(which((naCount/nrow(ref))>na.prop),
+                       which(!is.finite(obs))))
     ref = data.frame(ref) [,-1*badcols]
     obs = data.frame(t(obs [-1*badcols]))
     
@@ -78,10 +86,15 @@ make_ref_table = function(genofile, mname, intros, sources, csvpath=".",
     if (scale.var)
     {
         rscale=apply(rbind(obs,ref),2,scale)
+        #check that scaling didnt introduce Na
+        naCol = apply(rscale,2,function(x){sum((!is.finite(x)))})>0 
+        rscale=rscale[,!naCol]
         nobs=data.frame(t(rscale[1,]))
         ref=data.frame(rscale[-1,])
         rm(rscale)
     }
+
+    
     names(nobs)=names(ref)
     list(obs=nobs, params=data.frame(params), ref=ref, scale.var=scale.var)
 

@@ -95,8 +95,10 @@ species_setup <- function(root="test",fas=NULL,indmeta=NULL,genofile=NULL,mname=
 ############################  copy some R scripts 
     file.copy(paste0(system.file(package="testInvPath","skeletons"),"/runReps.R"),paste0(newdir,"/src/"))
 ############################ copy shell Scripts
-    file.copy(paste0(system.file(package="testInvPath","skeletons"),"/runSimulation.sh"),paste0(newdir,"/src/simulation.slurm"))
-    Sys.chmod(paste0(newdir,"/src/simulation.slurm"),mode="755")
+    file.copy(paste0(system.file(package="testInvPath","skeletons"),"/runSimulation.sh"),paste0(newdir,"/"))
+    Sys.chmod(paste0(newdir,"/runSimulation.sh"),mode="755")
+    file.copy(paste0(system.file(package="testInvPath","skeletons"),"/runABC.sh"),paste0(newdir,"/"))
+    Sys.chmod(paste0(newdir,"/runABC.sh"),mode="755")
 ################### create some files
 
     ########datafiles file
