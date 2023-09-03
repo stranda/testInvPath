@@ -74,7 +74,7 @@ ModelPostProbs = function(refobj,
 
 CVModelPostProbs = function(refobj,
                           method=c("neuralnet"),
-                          tol=c(0.1,0.05,0.01,0.005,0.001,0.005),
+                          tol=c(0.1,0.05,0.01,0.005,0.001,0.0005),
                           modelColumn="introModel",
                           nval=10,
                           cores=1,...)

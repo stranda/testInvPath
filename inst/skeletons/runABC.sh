@@ -26,7 +26,7 @@ cat <<EOL | sbatch
 #SBATCH --job-name=$job_name
 #SBATCH --time=48:00:00
 #SBATCH --cpus-per-task=$1
-#SBATCH --mem-per-cpu=200000	# 5.5gb memory per core
+#SBATCH --mem-per-cpu=140000	# 5.5gb memory per core
 #SBATCH --export=ALL
 #SBATCH --output="${d}/logs/ABClog-%A_%a.out"
 
