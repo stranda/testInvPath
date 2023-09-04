@@ -20,6 +20,8 @@ paramPosteriors = function(SimObj,cores=1,method="neuralnet",
 {
     ref=SimObj$ref
     params=SimObj$params
+    goodCol=apply(params,2,function(x)var(x))>0
+    params=params[,goodCol]
     obs=SimObj$obs
     d=expand.grid(method=method,tol=tol)
     
