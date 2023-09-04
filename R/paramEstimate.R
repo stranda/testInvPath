@@ -27,7 +27,7 @@ paramPosteriors = function(SimObj,cores=1,method="neuralnet",
     
     ret = lapply(1:nrow(d),function(i)
     {
-        abc(target=obs,param=params,sumstat=ref,method=method[i],tol=tol[i])
+        abc(target=obs,param=params,sumstat=ref,method=d$method[i],tol=d$tol[i])
     })
     names(ret)=paste(d$method,d$tol,sep="_")
     ret    
