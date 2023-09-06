@@ -88,6 +88,7 @@ make_ref_table = function(genofile, mname, intros, sources, csvpath=".",
         print(summary(ref))
         print(obs)
         print(summary(params))
+
     }
     
     nobs=obs
