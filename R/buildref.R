@@ -73,7 +73,15 @@ make_ref_table = function(genofile, mname, intros, sources, csvpath=".",
                        which(!is.finite(obs))))
     ref = data.frame(ref) [,-1*badcols]
     obs = data.frame(t(obs [-1*badcols]))
-    
+
+        if (verb)
+    {
+        print(summary(ref))
+        print(obs)
+        print(summary(params))
+
+    }
+
     ##remove rows that have any NAs (after removing bad columns above)
     ## have to remember to remove same rows from params as well
     cc = complete.cases(ref)
@@ -83,13 +91,6 @@ make_ref_table = function(genofile, mname, intros, sources, csvpath=".",
     params=params[k,]  
 
     rm(dat,badcols,cc,naCount)
-    if (verb)
-    {
-        print(summary(ref))
-        print(obs)
-        print(summary(params))
-
-    }
     
     nobs=obs
     if (scale.var)
