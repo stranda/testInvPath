@@ -15,7 +15,7 @@ getPriors <- function()
          nativeNe = runif(1,1000,7000), #effective size of native pops
          tIntro=tIntro,t0=t0,t1=t1,t2=t2,t3=t3,
          IntroGrow=0, #-1 * runif(1,0,0.1),
-         mut_rate = runif(1,0,0.000004),
+         mut_rate = runif(1,0,0.005),
          introM = runif(1,0,0.01),
          nativeM = runif(1,0,0.01),
          introModel = sample(1:4,1),

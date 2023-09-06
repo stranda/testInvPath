@@ -10,6 +10,7 @@
 #' @param dataType Type of genetic data. Default is 'microsatellite'.
 #' @param na.prop Proportion of NAs. Default is 0.01.
 #' @param scale.var Logical. Whether to scale the variables. Default is TRUE.
+#' @param verb       Logical. Whether to print details (default FALSE)
 #' @return A reference table based on genetic data. TODO: Add more detailed description.
 #' @export
 #' @examples
@@ -17,7 +18,8 @@
 
 make_ref_table = function(genofile, mname, intros, sources, csvpath=".",
                           dataType="microsatellite",
-                          na.prop=0.01,scale.var=T)
+                          na.prop=0.01,scale.var=T,
+                          verb=F)
 {
     ## calculate the observed summary stats
     meta1=read.csv(mname)
@@ -81,7 +83,13 @@ make_ref_table = function(genofile, mname, intros, sources, csvpath=".",
     params=params[k,]  
 
     rm(dat,badcols,cc,naCount)
-
+    if (verb)
+    {
+        print(summary(ref))
+        print(obs)
+        print(summary(params)
+    }
+    
     nobs=obs
     if (scale.var)
     {
