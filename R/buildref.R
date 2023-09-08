@@ -60,21 +60,42 @@ make_ref_table = function(genofile, mname, intros, sources, csvpath=".",
     dat=as.data.frame(dat)
     params=dat[,1:(ncol(dat)-length(obs))]
     ref=dat[,(ncol(params)+1):ncol(dat)]
-
+    if (verb) {
+        print("dimensions of ref before eliminating bad columns")
+        print(dim(ref))
+        print("obs:")
+        print(obs)
+        }
     ## remove invariant columns from ref
-    invCol=which(apply(ref,2,function(x){var(x)})==0)
-    ref=ref[,-invCol]
-    obs=obs[-invCol]
+    invCol=which(apply(ref,2,function(x){var(x,na.rm=T)})==0)
+    if (verb) {
+        print("invariant columns")
+        print(invCol)
+    }
+    if (length(invCol)>0)
+    {
+        ref=ref[,-invCol]
+        obs=obs[-invCol]
+    }
 
     
     ##remove columns that have lots of NAs (or any obs NAs) #same for Inf
     naCount = apply(ref,2,function(x){sum((!is.finite(x)))})
-    badcols = unique(c(which((naCount/nrow(ref))>na.prop),
-                       which(!is.finite(obs))))
-    ref = data.frame(ref) [,-1*badcols]
-    obs = data.frame(t(obs [-1*badcols]))
+#    badcols = unique(c(which((naCount/nrow(ref))>na.prop),
+#                       which(!is.finite(obs))))
+    badcols = ((naCount/nrow(ref))>na.prop) | (!is.finite(obs))
 
-        if (verb)
+    if (verb) {
+        print("naCount")
+        print(naCount)
+        print("bad columns")
+        print(badcols)
+    }
+
+        ref = data.frame(ref) [,!badcols]
+        obs = data.frame(t(obs [!badcols]))
+
+    if (verb)
     {
         print(summary(ref))
         print(obs)
