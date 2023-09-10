@@ -8,27 +8,29 @@
 #' @param meta is a dataframe with metadata
 #' @param dataType is a character that defines the type of genetic
 #'     data
+#' @param popPairwise calculate pairwise stats among every population (default FALSE)
 #' @description this function calls different summary stats functions
 #'     based on the value of dataType (possibilities include
 #'     "sequence", "snp", "microsatellite")
 #' @return vector of summary statistics
 #' @export
-summary_stats=function(gin,meta,dataType)
+summary_stats=function(gin,meta,dataType,popPairwise=FALSE)
 {
     if (tolower(dataType)=="sequence")
-        summary_stats_seq(gin,meta)
+        summary_stats_seq(gin,meta,popPairwise)
     else if (tolower(dataType)=="snp")
-        summary_stats_snp(gin,meta)
+        summary_stats_snp(gin,meta,popPairwise)
     else if (tolower(dataType)=="microsatellite")
-        summary_stats_microsatellite(gin,meta)
+        summary_stats_microsatellite(gin,meta,popPairwise)
     else stop("incorrect data type specified in summary_stats()")
 }
 
 #' calculate summary stats for sequence data (like mtDNA or cpDNA)
 #' @param gin is a gtypes object with sequence data
 #' @param meta is a dataframe with metadata
+#' @param popPairwise default FALSE
 #' @description calculates a lot of population genetic summary statistics
-summary_stats_seq=function(gin,meta)
+summary_stats_seq=function(gin,meta,popPairwise=FALSE)
 {
     e = Sys.time()
     ###nucleotide diversity among and within pops
@@ -48,8 +50,11 @@ summary_stats_seq=function(gin,meta)
 
 #    print("finished within nuc div")
 #    print(Sys.time()-e); e=Sys.time()
-    amongPi=nd$between$mean
-    names(amongPi)=paste0(nd$between$strata.1,".",nd$between$strata.2,".pi")
+    if (popPairwise)
+        {
+            amongPi=nd$between$mean
+            names(amongPi)=paste0(nd$between$strata.1,".",nd$between$strata.2,".pi")
+        }
 
 #    print("finished among nuc div")
 #    print(Sys.time()-e); e=Sys.time()
@@ -74,22 +79,20 @@ summary_stats_seq=function(gin,meta)
 
     overallStruct=overallTest(nosingles(gin),nrep=0)$result[3,1]
     names(overallStruct) = "overallPhiST"
-
-    genin = strataG::gtypes2genind(gin)
-    genp = adegenet::genind2genpop(genin,quiet=T)
+    if (popPairwise)
+        {
+            genin = strataG::gtypes2genind(gin)
+            genp = adegenet::genind2genpop(genin,quiet=T)
     
-    d=as.matrix(adegenet::dist.genpop(genp,method=3)) #weir cockerham dist 1983
+            d=as.matrix(adegenet::dist.genpop(genp,method=3)) #weir cockerham dist 1983
     
-    pwdf = unique(t(apply(expand.grid(col=colnames(d),row=rownames(d)),1,sort)))
-    pwdf = pwdf[pwdf[,1]!=pwdf[,2],]
-    colnames(pwdf)=c("col","row")
-    pwStruct=sapply(1:nrow(pwdf),function(x){r=d[pwdf[x,1],pwdf[x,2]];names(r)=paste0(pwdf[x,1],'_',pwdf[x,2]);r})
+            pwdf = unique(t(apply(expand.grid(col=colnames(d),row=rownames(d)),1,sort)))
+            pwdf = pwdf[pwdf[,1]!=pwdf[,2],]
+            colnames(pwdf)=c("col","row")
+            pwStruct=sapply(1:nrow(pwdf),function(x){r=d[pwdf[x,1],pwdf[x,2]];names(r)=paste0(pwdf[x,1],'_',pwdf[x,2]);r})
 
-    names(pwStruct)=paste0(names(pwStruct),".dist")
-
-#        print("finished among hap div")
-#    print(Sys.time()-e); e=Sys.time()
-#print("finished pop-level")    
+            names(pwStruct)=paste0(names(pwStruct),".dist")
+        }
 
 ###source and intro regions
     pops=data.frame(cbind(pop=strataG::getStrata(gin),ind=strataG::getIndNames(gin)))
@@ -128,9 +131,13 @@ summary_stats_seq=function(gin,meta)
 #    print("finished among region hap div")
 #    print(Sys.time()-e); e=Sys.time()
 
-    
+if (popPairwise)    
     r = c( overallDiv,  withinPopDiv, withinPi,  amongPi, overallHapDiv,
           withinPopHapDiv, overallStruct, pwStruct,withinRegionHapDiv, pwStruct.Region)
+else
+    r = c( overallDiv,  withinPopDiv, withinPi, overallHapDiv,
+          withinPopHapDiv, overallStruct,withinRegionHapDiv, pwStruct.Region)
+    
     r[order(names(r))]
 }
 
@@ -192,7 +199,7 @@ summary_stats_sfs=function(gin,meta)
 ###
 ### summary stat calculator for snps
 ###
-summary_stats_trad = function(gin,meta)
+summary_stats_trad = function(gin,meta,popPairwise=FALSE)
 {
     meta.orig=meta
     rownames(meta)=meta$longpop
@@ -214,9 +221,12 @@ summary_stats_trad = function(gin,meta)
     setStrata(gin) = longpops
     popHet = with(heterozygosity(gin,by.strata=T),aggregate(cbind(exptd.het=exptd.het),by=list(stratum=stratum),mean))[,2]
     names(popHet) = paste0(meta$pop,"Het")
-    popPW=pairwiseTest(gin,nrep=0,stats="Fst_prime",quiet=T)
-    popPair=sapply(popPW,function(x) x$result["Fst",1])
-    names(popPair) = sapply(popPW,function(x) paste(names(x$strata.freq),collapse="_"))
+    if (popPairwise)
+        {
+            popPW=pairwiseTest(gin,nrep=0,stats="Fst_prime",quiet=T)
+            popPair=sapply(popPW,function(x) x$result["Fst",1])
+            names(popPair) = sapply(popPW,function(x) paste(names(x$strata.freq),collapse="_"))
+        }
     
 
     
@@ -241,8 +251,12 @@ summary_stats_trad = function(gin,meta)
     regPW=pairwiseTest(gin,nrep=0,stats="Fst_prime",quiet=T)
     regPair=sapply(regPW,function(x) x$result["Fst",1])
     names(regPair) = sapply(regPW,function(x) paste(names(x$strata.freq),collapse="_"))
-    r=c(overallHet, ostruct,popHet,popPair,intro_vs_nativeHet, intro_vs_nativeOverall,
-      intro_vs_nativePair,regHet,regOverall,regPair)
+    if (popPairwise)
+        r=c(overallHet, ostruct,popHet,popPair,intro_vs_nativeHet, intro_vs_nativeOverall,
+            intro_vs_nativePair,regHet,regOverall,regPair)
+    else
+        r=c(overallHet, ostruct,popHet,intro_vs_nativeHet, intro_vs_nativeOverall,
+            intro_vs_nativePair,regHet,regOverall,regPair)
     r[order(names(r))]
 }
 
@@ -426,7 +440,7 @@ c(overallHet,popHet,intro_vs_nativeHet,regHet,reg2Het,
 #' \code{\link{heterozygosity}}, \code{\link{overallTest}}, \code{\link{pairwiseTest}}, \code{\link{mRatio}}
 #'
 
-summary_stats_microsatellite = function(gin,meta)
+summary_stats_microsatellite = function(gin,meta,popPairwise=FALSE)
 {
 
     meta.orig=meta
@@ -454,11 +468,14 @@ names(popHet) = paste0(meta$pop,"Het")
 popOverall = overallTest(gin,nrep=0)$result[,1]
 names(popOverall) = paste0(names(popOverall),".pop")
 
-    d=as.matrix(adegenet::dist.genpop(adegenet::genind2genpop(strataG::gtypes2genind(gin),quiet=T)))
-    pwdf = unique(t(apply(expand.grid(col=colnames(d),row=rownames(d)),1,sort)))
-    pwdf = pwdf[pwdf[,1]!=pwdf[,2],]
-    colnames(pwdf)=c("col","row")
-    popPair=sapply(1:nrow(pwdf),function(x){r=d[pwdf[x,1],pwdf[x,2]];names(r)=paste0(pwdf[x,1],'_',pwdf[x,2]);r})
+    if (popPairwise)
+        {
+            d=as.matrix(adegenet::dist.genpop(adegenet::genind2genpop(strataG::gtypes2genind(gin),quiet=T)))
+            pwdf = unique(t(apply(expand.grid(col=colnames(d),row=rownames(d)),1,sort)))
+            pwdf = pwdf[pwdf[,1]!=pwdf[,2],]
+            colnames(pwdf)=c("col","row")
+            popPair=sapply(1:nrow(pwdf),function(x){r=d[pwdf[x,1],pwdf[x,2]];names(r)=paste0(pwdf[x,1],'_',pwdf[x,2]);r})
+        }
     
 intro = meta[longpops,"intro"]
 names(intro) = getIndNames(gin)
@@ -483,9 +500,13 @@ names(regOverall) = paste0(names(regOverall),".reg")
 regPW=pairwiseTest(gin,nrep=0,stats="Fst_prime",quiet=T)
 regPair=sapply(regPW,function(x) x$result["Fst",1])
 names(regPair) = sapply(regPW,function(x) paste(names(x$strata.freq),collapse="_"))
+    if (popPairwise)
+            rv=c(overallHet,popHet,intro_vs_nativeHet,intro_vs_nativeOverall,
+                 intro_vs_nativePair,regHet,regM,regOverall,regPair,popPair)
+    else
+            rv=c(overallHet,popHet,intro_vs_nativeHet,intro_vs_nativeOverall,
+                 intro_vs_nativePair,regHet,regM,regOverall,regPair)
 
-    rv=c(overallHet,popHet,intro_vs_nativeHet,intro_vs_nativeOverall,
-         intro_vs_nativePair,regHet,regM,regOverall,regPair,popPair)
     rv=rv[order(names(rv))]  #make sure that the original and simulated summary stats are directly comparable
     rv
 }
