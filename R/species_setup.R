@@ -100,6 +100,8 @@ species_setup <- function(root="test",fas=NULL,indmeta=NULL,genofile=NULL,mname=
 ############################ copy shell Scripts
     file.copy(paste0(system.file(package="testInvPath","skeletons"),"/runSimulation.sh"),paste0(newdir,"/"))
     Sys.chmod(paste0(newdir,"/runSimulation.sh"),mode="755")
+    file.copy(paste0(system.file(package="testInvPath","skeletons"),"/gatherCSV.sh"),paste0(newdir,"/"))
+    Sys.chmod(paste0(newdir,"/gatherCSV.sh"),mode="755")
     file.copy(paste0(system.file(package="testInvPath","skeletons"),"/runABC.sh"),paste0(newdir,"/"))
     Sys.chmod(paste0(newdir,"/runABC.sh"),mode="755")
 ################### create some files
