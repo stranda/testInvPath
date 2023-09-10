@@ -71,15 +71,17 @@ species_setup <- function(root="test",fas=NULL,indmeta=NULL,genofile=NULL,mname=
     itrs = unique(colnames(gt)[colnames(gt)%in%meta1$source])
     srcs = unique(rownames(gt)[rownames(gt)%in%meta1$source])
 
-    if (!dir.exists(newdir)) dir.create(newdir)
-    if (!dir.exists(paste0(newdir,"/data"))) dir.create(paste0(newdir,"/data"))
-    if (!dir.exists(paste0(newdir,"/src"))) dir.create(paste0(newdir,"/src"))
-    if (!dir.exists(paste0(newdir,"/results"))) dir.create(paste0(newdir,"/results"))
-    if (!dir.exists(paste0(newdir,"/logs"))) dir.create(paste0(newdir,"/logs"))
-    if (!dir.exists(paste0(newdir,"/gathered"))) dir.create(paste0(newdir,"/gathered"))
-    if (!dir.exists(paste0(newdir,"/archivedCSV"))) dir.create(paste0(newdir,"/archivedCSV"))
-    if (!dir.exists(paste0(newdir,"/figs"))) dir.create(paste0(newdir,"/figs"))
-
+    if (!dir.exists(newdir))
+    {
+        dir.create(newdir)
+        if (!dir.exists(paste0(newdir,"/data"))) dir.create(paste0(newdir,"/data"))
+        if (!dir.exists(paste0(newdir,"/src"))) dir.create(paste0(newdir,"/src"))
+        if (!dir.exists(paste0(newdir,"/results"))) dir.create(paste0(newdir,"/results"))
+        if (!dir.exists(paste0(newdir,"/logs"))) dir.create(paste0(newdir,"/logs"))
+        if (!dir.exists(paste0(newdir,"/gathered"))) dir.create(paste0(newdir,"/gathered"))
+        if (!dir.exists(paste0(newdir,"/archivedCSV"))) dir.create(paste0(newdir,"/archivedCSV"))
+        if (!dir.exists(paste0(newdir,"/figs"))) dir.create(paste0(newdir,"/figs"))
+    
     file.copy(mname,paste0(newdir,"/data/metadata.csv"))
     file.copy(mname,paste0(newdir,"/data/"))
     file.copy(genofile,paste0(newdir,"/data/gin.RDS"))
@@ -143,7 +145,9 @@ species_setup <- function(root="test",fas=NULL,indmeta=NULL,genofile=NULL,mname=
     cat(file=paste0(newdir,"/src/datafiles.R"),append=T,paste0("species='",species,"' #species name\n\n"))
 
         cat(file=paste0(newdir,"/src/datafiles.R"),append=T,paste0("fsc_exec='",fsc_exec,"' #fastsimcoal executable name\n\n"))
-    
+    } else { #Species directory structure already exists
+        print(paste0(newdir," already exists.  To be safe I didn't overwrite anything.  Delete or rename it"))
+    }
 }    
     
     
