@@ -5,23 +5,36 @@
 ## the calculation of summary statistics.
 ##
 
+args <- commandArgs(trailingOnly = TRUE)
+### Check if an argument is provided, and if it's numeric
+if (length(args) == 2 && !is.na(as.numeric(args[2]))) {
+    cores <- as.numeric(args[1])
+    seed <- round(as.numeric(args[2]))
+} else {
+    cores <- 1; seed <- NULL
+}
+####set the rng seed based on either the command line 2nd param or NULL
+print("seed:")
+print(seed)
+
+set.seed(seed)
+
+
 library(parallel)
 library(testInvPath)
 library(strataG)
-library(rstream)
+
 
 source("datafiles.R") #defines mname, genofile, sources and intros
 
 #first set up the basic parameters for these simulations
 
-s <- new("rstream.mrg32k3a")
-rstream.RNG(s)
 
 params = setupReps(mname=paste0(abspath,"/",mname),
                    genofile=paste0(abspath,"/",genofile),
                    native_range_topology=nativeTopology, #present in datafiles.R
-                   mainparams(cores=1,
-                              nreps=2,
+                   mainparams(cores=cores,
+                              nreps=50,
                               demeN=0,
                               demeI=0,
                               sources=sources,
