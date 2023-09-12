@@ -67,5 +67,9 @@ species_setup(root="/home/astrand/GoogleDrive/data/Oyster/gigas-popgen/ABC_input
 
 species_setup(root="/home/astrand/GoogleDrive/data/Oyster/gigas-popgen/ABC_input/Palaemon_macrodactylus/",fas="Palaemon_238inds.fas",indmeta="Palaemon_238inds_meta.csv",mname="pala_meta.csv",newdir="/home/astrand/tmp/pala",species="Palaemon_macrodactylus",dataType="sequence",fsc_exec="fsc27")
 
+##
+
+species_setup(root="/home/astrand/GoogleDrive/data/Oyster/gigas-popgen/ABC_input/Polydora_hoplura/",fas="Polydora_final.fas",indmeta="Polydora_inds_final.csv",mname="Polydora_meta.csv",newdir="/home/astrand/tmp/polyd",species="Polydora_hoplura",dataType="sequence",fsc_exec="fsc27")
+
 
 
