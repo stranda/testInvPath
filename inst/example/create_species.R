@@ -5,6 +5,7 @@
 library(testInvPath)
 
 
+
 ##Undaria
 species_setup(root="/home/astrand/GoogleDrive/data/Oyster/gigas-popgen/ABC_input/Undaria_pinnatifida/",fas="Uwai_141inds_2loc.fas",indmeta="Uwai_141inds.meta.csv",mname="upinn_meta_updated.csv",newdir="/home/astrand/tmp/upinn",species="Undaria_pinnatifida",dataType="sequence",fsc_exec="fsc27")
 

@@ -33,6 +33,7 @@ species_setup <- function(root="test",fas=NULL,indmeta=NULL,genofile=NULL,mname=
                             indmeta=paste0(root,"/data/",indmeta)
                         else stop(paste("cant find fasta file ",indmeta))                    
         }
+        print("running fasta2gin")
         g=fasta2gin(fas,indmeta)
         genofile=paste0(root,"/","gtype_from_fasta.RDS")
         saveRDS(file=paste0(genofile),g)
