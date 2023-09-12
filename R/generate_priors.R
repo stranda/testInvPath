@@ -19,6 +19,6 @@ getPriors <- function()
          introM = runif(1,0,0.01),
          nativeM = runif(1,0,0.01),
          introModel = sample(1:4,1),
-         SimulIntro =  sample(c(TRUE,TRUE),1)
+         SimulIntro =  sample(c(TRUE,FALSE),1)
         )
 }
