@@ -8,13 +8,13 @@ fasta2gin = function(fas=NULL,indmeta=NULL)
 ###        mn =  "../data/Uwai_141inds.meta.csv"
         mn=indmeta
         lmeta = read.csv(mn)
-        print(head(lmeta))
+#        print(head(lmeta))
         rownames(lmeta)=lmeta$indID
         fas=strataG::read.fasta(fas)
-print("converting fasta to gtype in the next line")        
+#print("converting fasta to gtype in the next line")        
         g = strataG::sequence2gtypes(fas)
         
-        print(getIndNames(g))
+#        print(getIndNames(g))
 
         sv = lmeta$popID
         names(sv)=rownames(lmeta)
