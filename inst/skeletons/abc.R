@@ -66,7 +66,7 @@ scssfn=paste0(abspath,'/data/modsel_untrans.RDS')
 if (!file.exists(scssfn))
     {
         modsel_untr = ModelPostProbs(untrans.ref,method=c("mnlogistic"),
-                                     cores=cores)
+                                     cores=cores,modelColumn="compositeModel")
         saveRDS(file=scssfn,modsel_untr)
     } else modsel_untr=readRDS(file=scssfn)
 
@@ -76,7 +76,7 @@ if (crossVal)
     if (!file.exists(cvfn))
     {
         cv_untr = CVModelPostProbs(untrans.ref,method=c("mnlogistic"),
-                                     cores=cores)
+                                     cores=cores,modelColumn="compositeModel")
         saveRDS(file=cvfn,cv_untr)
     } else cv_untr=readRDS(file=cvfn)
 
@@ -89,7 +89,7 @@ pcassfn=paste0(abspath,'/data/modsel_pca.RDS')
 if (!file.exists(pcassfn))
     {
         modsel_pca = ModelPostProbs(pca.ref,method=c("mnlogistic","neuralnet"),
-                                     cores=cores)
+                                     cores=cores,modelColumn="compositeModel")
         saveRDS(file=pcassfn,modsel_pca)
     } else modsel_pca=readRDS(file=pcassfn)
 
@@ -99,7 +99,7 @@ if (crossVal)
     if (!file.exists(cvpfn))
     {
         cv_pca = CVModelPostProbs(pca.ref,method=c("mnlogistic"),
-                                     cores=cores)
+                                     cores=cores,modelColumn="compositeModel")
         saveRDS(file=cvpfn,cv_untr)
     } else cv_pca=readRDS(file=cvpfn)
 
@@ -112,7 +112,7 @@ if (crossVal)
 rffn=paste0(abspath,'/data/modelRF_pca.RDS')
 if (!file.exists(rffn))
     {
-        modelRF_pca = modelRF(pca.ref,cores=cores)
+        modelRF_pca = modelRF(pca.ref,cores=cores,modelColumn="compositeModel")
         saveRDS(file=rffn,modelRF_pca)
     } else modelRF_pca=readRDS(file=rffn)
 
@@ -120,7 +120,7 @@ if (!file.exists(rffn))
 rfpfn=paste0(abspath,'/data/modelRF_pca_pred.RDS')
 if (!file.exists(rfpfn))
     {
-        modelRF_pca_pred = predRFmodel(modelRF_pca,pca.ref,cores=cores)
+        modelRF_pca_pred = predRFmodel(modelRF_pca,pca.ref,cores=cores,modelColumn="compositeModel")
         saveRDS(file=rfpfn,modelRF_pca_pred)
     } else modelRF_pca_pred=readRDS(file=rfpfn)
 
@@ -143,7 +143,7 @@ dev.off()
 rffn=paste0(abspath,'/data/modelRF.RDS')
 if (!file.exists(rffn))
     {
-        modelRF = modelRF(untrans.ref,cores=cores)
+        modelRF = modelRF(untrans.ref,cores=cores,modelColumn="compositeModel")
         saveRDS(file=rffn,modelRF)
     } else modelRF=readRDS(file=rffn)
 
@@ -151,7 +151,7 @@ if (!file.exists(rffn))
 rfpfn=paste0(abspath,'/data/modelRF_pred.RDS')
 if (!file.exists(rfpfn))
     {
-        modelRF_pred = predRFmodel(modelRF,untrans.ref,cores=cores)
+        modelRF_pred = predRFmodel(modelRF,untrans.ref,cores=cores,modelColumn="compositeModel")
         saveRDS(file=rfpfn,modelRF_pred)
     } else modelRF_pred=readRDS(file=rfpfn)
 

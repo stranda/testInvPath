@@ -109,9 +109,12 @@ make_ref_table = function(genofile, mname, intros, sources, csvpath=".",
     ninf=colSums(!apply(ref,1,is.finite))==0
     k = cc&ninf
     ref=ref[k,]
-    params=params[k,]  
+    params=data.frame(params[k,]  )
 
     rm(dat,badcols,cc,naCount)
+
+    ##create the composite model
+    params$compositeModel=as.numeric(paste0(params$introModel,".",params$SimulIntro))
     
     nobs=obs
     if (scale.var)

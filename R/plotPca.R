@@ -29,8 +29,9 @@ plotPCA = function(pca.ref, prop_points=0.2, mod_color=c(2:5), obs_color=6,
     for (i in 1:nrow(axes))
     {
         par(mai=c(0.9,0.9,0.5,0.1))
+        
         plot(x=ref[,axes[i,1]],y=ref[,axes[i,2]],
-             type="p",pch=16,col=mod_color[params$introModel],
+             type="p",pch=c(16,17)[params$SimulIntro+1],col=mod_color[params$introModel],
              main=paste0("PC-",axes[i,1]," on X axis, PC-",axes[i,2]," on Y"),
              xlab=paste0("PC-",axes[i,1]),ylab=paste0("PC-",axes[i,2]),
              xlim=range(c(obs[axes[i,1]],ref[,axes[i,1]])),
@@ -38,7 +39,7 @@ plotPCA = function(pca.ref, prop_points=0.2, mod_color=c(2:5), obs_color=6,
         points(x=obs[axes[i,1]],y=obs[axes[i,2]],cex=2,pch=17,col=obs_color)
         par(mai=c(0.5,0.1,0.5,0.1))
         plot(x=rep(1,length(unique(params$introModel))),
-             y=1:4, pch=19, cex=16, col=mod_color[1:4],axes=F,xlab="",ylab="",
+             y=1:4, pch=c(19), cex=16, col=mod_color[1:4],axes=F,xlab="",ylab="",
              main="IntroModel")
         text(x=rep(1,length(unique(params$introModel))),
              y=1:4,models,cex=1.1)
