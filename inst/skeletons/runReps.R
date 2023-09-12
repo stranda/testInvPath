@@ -11,7 +11,14 @@ if (length(args) == 2 && !is.na(as.numeric(args[2]))) {
     cores <- as.numeric(args[1])
     seed <- round(as.numeric(args[2]))
 } else {
-    cores <- 1; seed <- NULL
+    cores <- 1
+    slurmArrayID = Sys.getenv("SLURM_ARRAY_TASK_ID")
+    if (slurmArrayID!="")
+    {
+        slurmJobID=Sys.getenv("SLURM_JOB_ID")
+        seed = as.integer(paste0(slurmArrayID,slurmJobID))
+    }
+    else seed <- NULL
 }
 ####set the rng seed based on either the command line 2nd param or NULL
 print("seed:")
@@ -35,8 +42,8 @@ params = setupReps(mname=paste0(abspath,"/",mname),
                    native_range_topology=nativeTopology, #present in datafiles.R
                    mainparams(cores=cores,
                               nreps=50,
-                              demeN=0,
-                              demeI=0,
+                              demeN=20,
+                              demeI=20,
                               sources=sources,
                               intros=intros,
                               dataType=dataType,

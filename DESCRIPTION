@@ -13,6 +13,6 @@ Depends:  ape,
 	  strataG,
 	  abc,
 	  abcrf,
-	  rstream
+	  dplyr
 Remotes:  github::stranda/strataG
 RoxygenNote: 7.2.3

@@ -36,8 +36,11 @@ echo $d
 
 cd $d/src
 
+echo "SLURM ARRAY TASK ID:"
+echo $SLURM_ARRAY_TASK_ID
+
 module load singularity
-singularity run ${container} Rscript runReps.R 1  ${SLURM_JOB_ID}${SLURM_ARRAY_TASK_ID}
+singularity run ${container} Rscript runReps.R 
 mv reference*.csv ${d}/results/
 
 EOL

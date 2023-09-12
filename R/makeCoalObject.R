@@ -32,8 +32,9 @@ createCoalObject <- function(params,priors,demeN=0,demeI=0)
     if (max(c(demeN,demeI))>0)
     {
         regtbl = meta%>%group_by(intro,source)%>%summarize(n=n()) #this dataframe contains the number of sampled pops in each region in the metafile
-        madd=do.call(rbind,lapply(unique(meta$source),function(s)  #this assumes no population is both source and introduced (not modeing hopping)
+        madd=do.call(rbind,lapply(unique(meta$source),function(s)  #this assumes no population is both source and introduced (not modeling hopping)
         {
+            print(s)
             if (regtbl$intro[regtbl$source==s]) #these are introduced pops
             {
                 iNeeded = demeI-regtbl$n[regtbl$source==s]
@@ -46,11 +47,16 @@ createCoalObject <- function(params,priors,demeN=0,demeI=0)
                 if (nNeeded>0)
                 {
                     m=meta[rep(which(meta$source==s)[1],nNeeded),]
-                }
+                } 
             }
-            m$longpop=rep(paste0(s,"_ghost"),nrow(m))
-            m$idnum=rep(NA,nrow(m))
-            m
+            if (exists("m")) #this can happen if there are more sampled pops in a region than demes we ask for
+                {
+                    m$longpop=rep(paste0(s,"_ghost"),nrow(m))
+                    m$idnum=rep(NA,nrow(m))
+                    m
+                } else {
+                    NULL
+                }
         }))
         madd$longpop=paste0(madd$longpop,1:nrow(madd))
         madd$pop=sprintf("%03i",1:nrow(madd))
