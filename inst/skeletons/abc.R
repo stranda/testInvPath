@@ -103,7 +103,19 @@ if (crossVal)
         saveRDS(file=cvpfn,cv_untr)
     } else cv_pca=readRDS(file=cvpfn)
 
+###
+probdf = data.frame(do.call(rbind,lapply(modsel_pca, function(x)
+{
+    y=summary(x,print=F,rejection=F)$Prob
+})))
 
+probdf$method=sapply(strsplit(rownames(probdf),"_"),function(x)x[1])
+probdf$tol=as.numeric(sapply(strsplit(rownames(probdf),"_"),function(x)x[2]))
+
+pdf(file=paste0(abspath,"/figs/posterior_pca.pdf"))
+barplot(as.matrix(probdf[probdf$method=="neuralnet",1:8]),beside=T,names=gsub("X","",names(probdf)[1:8]),ylab="posterior probability of model",xlab="model (1-2==shipping, 3-4==gigas)",main=species)
+legend(x=1,y=0.9*max(c(unlist(probdf[probdf$method=="neuralnet",1:8]))),legend=probdf[probdf$method=="neuralnet","tol"],title="Tol",fill=grey.colors(6)[1:6])
+dev.off()
 
 ##
 ## build a random forest of the summary stats and train to predict the model indices
@@ -179,7 +191,7 @@ paramfn=paste0(abspath,'/data/params_untrans.RDS')
 if (!file.exists(paramfn))
 {
 
-    post_params_untrans = paramPosteriors(untrans.ref,method=c("loclinear","ridge"),cores=cores)
+    post_params_untrans = paramPosteriors(untrans.ref,method=c("loclinear","ridge","neuralnet"),cores=cores,tol=c(0.1,0.01))
     saveRDS(file=paramfn,post_params_untrans)
 } else post_params_untrans=readRDS(file=paramfn)
 
@@ -189,8 +201,27 @@ if (!file.exists(paramfn))
 paramfn=paste0(abspath,'/data/params_pca.RDS')
 if (!file.exists(paramfn))
 {
-    post_params_pca = paramPosteriors(pca.ref,method=c("loclinear","ridge"),cores=cores)
+    post_params_pca = paramPosteriors(pca.ref,method=c("loclinear","ridge","neuralnet"),cores=cores,tol=c(0.1,0.05,0.01))
     saveRDS(file=paramfn,post_params_pca)
 } else post_params_pca=readRDS(file=paramfn)
+
+##Plot PCA-based parameter estimates
+
+for (n in names(post_params_pca))
+     {
+         pdf(file=paste0(abspath,"/figs/",n,"_param_est_pca.pdf"))
+         plot(post_params_pca[[n]],pca.ref$params[,1:14],ask=F)
+         dev.off()
+     }
+
+
+##Plot untransformed summary stats-based parameter estimates
+
+for (n in names(post_params_pca))
+     {
+         pdf(file=paste0(abspath,"/figs/",n,"_param_est.pdf"))
+         plot(post_params_untrans[[n]],untrans.ref$params[,1:14],ask=F)
+         dev.off()
+     }
 
 

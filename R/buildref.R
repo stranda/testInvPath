@@ -18,7 +18,7 @@
 
 make_ref_table = function(genofile, mname, intros, sources, csvpath=".",
                           dataType="microsatellite",
-                          na.prop=0.01,scale.var=T,
+                          na.prop=0.01,scale.var=T,popPairwise=F,
                           verb=F)
 {
     ## calculate the observed summary stats
@@ -42,7 +42,7 @@ make_ref_table = function(genofile, mname, intros, sources, csvpath=".",
     meta = meta[,c("longpop","intro","source","idnum","pop")]
 
 
-    obs=summary_stats(gin,meta,dataType)
+    obs=summary_stats(gin,meta,dataType,popPairwise=popPairwise)
 
     
 
