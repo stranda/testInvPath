@@ -117,6 +117,15 @@ barplot(as.matrix(probdf[probdf$method=="neuralnet",1:8]),beside=T,names=gsub("X
 legend(x=1,y=0.9*max(c(unlist(probdf[probdf$method=="neuralnet",1:8]))),legend=probdf[probdf$method=="neuralnet","tol"],title="Tol",fill=grey.colors(6)[1:6])
 dev.off()
 
+ship_v_gigas = cbind(ship_pr=rowSums(probdf[probdf$method=="neuralnet",1:4]),gigas_pr=rowSums(probdf[probdf$method=="neuralnet",5:8]))
+print(ship_v_gigas)
+pdf(file=paste0(abspath,"/figs/bayes_factor_pca.pdf"))
+barplot(as.matrix(ship_v_gigas),beside=T,main=species)
+dev.off()
+
+probdf$species=species
+write.table(file=paste0(abspath,"/data/probdf.csv"),sep=",",row.names=F,probdf)
+
 ##
 ## build a random forest of the summary stats and train to predict the model indices
 ## run it on PCA transformed vars
@@ -190,7 +199,6 @@ if (diagnosticPlot)
 paramfn=paste0(abspath,'/data/params_untrans.RDS')
 if (!file.exists(paramfn))
 {
-
     post_params_untrans = paramPosteriors(untrans.ref,method=c("loclinear","ridge","neuralnet"),cores=cores,tol=c(0.1,0.01))
     saveRDS(file=paramfn,post_params_untrans)
 } else post_params_untrans=readRDS(file=paramfn)

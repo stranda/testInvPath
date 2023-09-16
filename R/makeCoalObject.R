@@ -249,11 +249,13 @@ createCoalObject <- function(params,priors,demeN=0,demeI=0)
 
     genetics <- switch(params$dataType,
                  "sequence" = {
-                   # simulate DNA sequence
-                   strataG::fscSettingsGenetics(
-                                strataG::fscBlock_dna(sequence.length=908,mut.rate=priors$mut_rate),
-                                strataG::fscBlock_dna(sequence.length=908,mut.rate=priors$mut_rate),
-                                num.chrom=NULL)
+                     ## simulate DNA sequence
+                     ## set the length of the sequence to use
+                     seqlen=ncol(params$gin@sequences@dna$gene.1)
+                     strataG::fscSettingsGenetics(
+                                  strataG::fscBlock_dna(sequence.length=seqlen,mut.rate=priors$mut_rate,transition.rate=0.33),
+                                  strataG::fscBlock_dna(sequence.length=seqlen,mut.rate=priors$mut_rate,transition.rate=0.33),
+                                  num.chrom=NULL)
                  },
                  "snp" = {
                    # simulate snps

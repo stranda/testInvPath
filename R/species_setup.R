@@ -10,7 +10,7 @@
 #' @param nativeTopology a named matrix describing the topology and relative times for the history of a species in the native range.  If null defaults to output of function nativeHistory()
 #' @param fsc_exec executable for fastsimcoal
 #' @export
-species_setup <- function(root="test",fas=NULL,indmeta=NULL,genofile=NULL,mname=NULL,newdir=NULL,dataType="sequence",species="test",nativeTopology=NULL,fsc_exec="fsc27")
+species_setup <- function(root="test",fas=NULL,indmeta=NULL,genofile=NULL,mname=NULL,newdir=NULL,dataType="sequence",species="test",nativeTopology=NULL,fsc_exec="fsc27",popPairwise=FALSE)
 {
     if (is.null(fas)&is.null(genofile)) stop("there has to be some genetic data")
     if (is.null(mname)) stop("the genetic data must be accompanied by metadata linking populatins to strata")
@@ -145,6 +145,7 @@ species_setup <- function(root="test",fas=NULL,indmeta=NULL,genofile=NULL,mname=
     
     cat(file=paste0(newdir,"/src/datafiles.R"),append=T,paste0("dataType='",dataType,"' #type of genetic data\n\n"))
 
+        cat(file=paste0(newdir,"/src/datafiles.R"),append=T,paste0("popPairwise=",popPairwise," #caculate pairwise _population_ statistics (regional are retained)\n\n"))
     cat(file=paste0(newdir,"/src/datafiles.R"),append=T,paste0("species='",species,"' #species name\n\n"))
 
         cat(file=paste0(newdir,"/src/datafiles.R"),append=T,paste0("fsc_exec='",fsc_exec,"' #fastsimcoal executable name\n\n"))

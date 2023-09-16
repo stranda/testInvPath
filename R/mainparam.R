@@ -30,7 +30,8 @@ mainparams <-function(cores=1,
                       intros=c("PNW","Cali","NZ","Arg","EU"), #there should be samples from everything in this vector
                       dataType="",
                       fsc_exec="",
-                      exclude="nonSource"
+                      exclude="nonSource",
+                      popPairwise=popPairwise
                       )
 {
     list(cores=cores, #cores 
@@ -42,6 +43,7 @@ mainparams <-function(cores=1,
          intros=intros, #there should be samples from everything in this vector
          dataType=dataType,
          fsc_exec=fsc_exec,
-         exclude=exclude
+         exclude=exclude,
+         popPairwise=popPairwise
          )
 }
