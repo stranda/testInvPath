@@ -77,7 +77,7 @@ rdf = do.call(rbind,mclapply(1:params$nreps,mc.cores=params$cores,function(i)
     fscCleanup(runout$label,runout$folder) #remove fsc files
     elapsed=Sys.time()-strt
     print(c(elapsed,unlist(priors)))
-    c(unlist(priors),summary_stats(res,params$meta,dataType,popPairwise))
+    c(unlist(priors),summary_stats(res,params$meta,dataType,popPairwise=params$popPairwise))
 }))
 
 write.table(file=paste0("reference",round(runif(1,min=0,max=1000000)),".csv"),row.names=F,sep=",",data.frame(rdf))

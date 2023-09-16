@@ -31,10 +31,10 @@ if (!file.exists(utfn))
                                mname=mname,
                                intros=intros,sources=sources,
                                csvpath=paste0(abspath,'/gathered'),
-                               dataType=dataType)
+                               dataType=dataType,
+                               popPairwise=popPairwise)
     saveRDS(file=utfn,untrans.ref)
 } else untrans.ref = readRDS(file=utfn)
-
 
 ##########################
 ##
