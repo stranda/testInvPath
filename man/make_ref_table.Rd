@@ -12,7 +12,9 @@ make_ref_table(
   csvpath = ".",
   dataType = "microsatellite",
   na.prop = 0.01,
-  scale.var = T
+  scale.var = T,
+  popPairwise = F,
+  verb = F
 )
 }
 \arguments{
@@ -31,6 +33,8 @@ make_ref_table(
 \item{na.prop}{Proportion of NAs. Default is 0.01.}
 
 \item{scale.var}{Logical. Whether to scale the variables. Default is TRUE.}
+
+\item{verb}{Logical. Whether to print details (default FALSE)}
 }
 \value{
 A reference table based on genetic data. TODO: Add more detailed description.

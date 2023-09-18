@@ -27,10 +27,10 @@ print(seed)
 set.seed(seed)
 
 
-library(parallel)
-library(testInvPath)
-library(strataG)
-
+library(parallel,quiet=T)
+library(testInvPath,quiet=T)
+library(strataG,quiet=T)
+library(phyclust)
 
 source("datafiles.R") #defines mname, genofile, sources and intros
 
@@ -59,16 +59,24 @@ rdf = do.call(rbind,mclapply(1:params$nreps,mc.cores=params$cores,function(i)
     priors=getPriors()
     print(priors$introModel)
     strt=Sys.time()
+
     simp=createCoalObject(params,priors,params$demeN,params$demeI)
 
     if (tolower(params$dataType)=="sequence")
     {
-        runout=fscRun(simp,exec=fsc_exec,dna.to.snp=F,seed=round(runif(1,1,10000000)))
-        res=fsc2gtypes(runout,marker='dna',as.genotypes=F,concat.dna=F)
-        res=res[,1,] #only have 1 sequence in emprirical data
+        runout=fscRun(simp,exec=fsc_exec,dna.to.snp=F,seed=round(runif(1,1,10000000)),tree=use.seqgen)
+        if (use.seqgen)
+        {
+            tree=read.nexus(paste0(simp$folder,"/strataG.fsc/strataG.fsc_1_true_trees.trees"))
+            res=seqgen2gtype(tree,params,demes=simp$settings$demes,temp.file=paste0(simp$folder,"/tmpseq.phylip"),mu=round(10*priors$mut_rate,8))
+        } else {
+            res=fsc2gtypes(runout,marker='dna',as.genotypes=F,concat.dna=F)
+            res=res[,1,] #only have 1 sequence in emprirical data
+        }
+        
     }   else if (tolower(params$dataType)=="snp") {
-        runout=fscRun(simp,exec=fsc_exec,max.snps=1000,dna.to.snp=T,seed=round(runif(1,1,10000000)))
-        res=fsc2gtypes(runout,marker="snp") 
+        runout=fscRun(simp,exec=fsc_exec,max.snps=1000,dna.to.snp=T,seed=round(runif(1,1,10000000)),tree=T)
+        res=fsc2gtypes(runout,marker="snp")
     } else if (tolower(params$dataType)=="microsatellite") {
         runout=fscRun(simp,exec=fsc_exec,seed=round(runif(1,1,10000000)))
         res=fsc2gtypes(runout,marker="microsat")

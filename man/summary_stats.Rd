@@ -4,7 +4,7 @@
 \alias{summary_stats}
 \title{calculate summary stats}
 \usage{
-summary_stats(gin, meta, dataType)
+summary_stats(gin, meta, dataType, popPairwise = FALSE)
 }
 \arguments{
 \item{gin}{is a gtypes object with genetic data}
@@ -13,6 +13,8 @@ summary_stats(gin, meta, dataType)
 
 \item{dataType}{is a character that defines the type of genetic
 data}
+
+\item{popPairwise}{calculate pairwise stats among every population (default FALSE)}
 }
 \value{
 vector of summary statistics

@@ -72,5 +72,7 @@ species_setup(root="/home/astrand/GoogleDrive/data/Oyster/gigas-popgen/ABC_input
 
 species_setup(root="/home/astrand/GoogleDrive/data/Oyster/gigas-popgen/ABC_input/Polydora_hoplura/",fas="Polydora_final.fas",indmeta="Polydora_inds_final.csv",mname="Polydora_meta.csv",newdir="/home/astrand/tmp/polyd",species="Polydora_hoplura",dataType="sequence",fsc_exec="fsc27")
 
+species_setup(root="/home/astrand/GoogleDrive/data/Oyster/gigas-popgen/ABC_input/Test_species/",fas="Test_final.fas",indmeta="Test_inds_final.csv",mname="Test_meta.csv",newdir="/home/astrand/tmp/testsp",species="Test_species",dataType="sequence",fsc_exec="fsc27",popPairwise=T)
+
 
 

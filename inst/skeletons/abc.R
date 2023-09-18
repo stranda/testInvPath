@@ -43,7 +43,7 @@ if (!file.exists(utfn))
 pcafn=paste0(abspath,'/data/pcaRef.RDS')
 if (!file.exists(pcafn))
     {
-        pca.ref = make_pca_ref_table(untrans.ref,prop.variation=0.99)
+        pca.ref = make_pca_ref_table(untrans.ref,prop.variation=0.9)
         saveRDS(file=pcafn,pca.ref)
     } else pca.ref=readRDS(file=pcafn)
 

@@ -14,7 +14,8 @@ mainparams(
   intros = c("PNW", "Cali", "NZ", "Arg", "EU"),
   dataType = "",
   fsc_exec = "",
-  exclude = "nonSource"
+  exclude = "nonSource",
+  popPairwise = popPairwise
 )
 }
 \arguments{

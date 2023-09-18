@@ -4,7 +4,7 @@
 \alias{summary_stats_microsatellite}
 \title{Summary Statistics for Microsatellites}
 \usage{
-summary_stats_microsatellite(gin, meta)
+summary_stats_microsatellite(gin, meta, popPairwise = FALSE)
 }
 \arguments{
 \item{gin}{Genetic input data in strataG gtypes format}

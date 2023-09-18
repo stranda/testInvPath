@@ -7,7 +7,8 @@ Author: Allan Strand
 Maintainer: Allan Strand <stranda@cofc.edu>
 Description: Takes genetic data for a species that could have co-invaded with Crassostrea gigas and tests that possibility against shipping.
 License: GPL-3
-Imports:  parallel
+Imports:  parallel,
+	  phyclust
 Depends:  ape,	
 	  adegenet,
 	  strataG,
