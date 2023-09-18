@@ -15,7 +15,8 @@ species_setup(
   species = "test",
   nativeTopology = NULL,
   fsc_exec = "fsc27",
-  popPairwise = FALSE
+  popPairwise = FALSE,
+  use.seqgen = FALSE
 )
 }
 \arguments{
