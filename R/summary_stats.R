@@ -32,7 +32,6 @@ summary_stats=function(gin,meta,dataType,popPairwise=FALSE)
 #' @description calculates a lot of population genetic summary statistics
 summary_stats_seq=function(gin,meta,popPairwise=FALSE)
 {
-    e = Sys.time()
     ###nucleotide diversity among and within pops
     overallDiv=c(mean(nucleotideDiversity(gin)))
     names(overallDiv)="overallDiversity"
@@ -54,6 +53,7 @@ summary_stats_seq=function(gin,meta,popPairwise=FALSE)
         {
             amongPi=nd$between$mean
             names(amongPi)=paste0(nd$between$strata.1,".",nd$between$strata.2,".pi")
+            names(amongPi)=sapply(strsplit(names(amongPi),"\\."),function(x) {paste(c(sort(c(x[1],x[2])),x[3]),collapse=".")})==names(amongPi) #sort the pop names alphabetically
         }
 
 #    print("finished among nuc div")
@@ -127,7 +127,7 @@ summary_stats_seq=function(gin,meta,popPairwise=FALSE)
 
     pwStruct.Region=sapply(pairwiseTest(nosingles(gin),nrep=0,quiet=T),function(x){y=x$result[3,1];names(y)=paste(names(x$strata.freq),collapse=".");y})
     names(pwStruct.Region)=paste0(names(pwStruct.Region),".PhiST")
-
+    names(pwStruct.Region) = sapply(strsplit(names(pwStruct.Region),"\\."),function(x) {paste(c(sort(c(x[1],x[2])),x[3]),collapse=".")}) #sort the regions in the names themselves
 #    print("finished among region hap div")
 #    print(Sys.time()-e); e=Sys.time()
 

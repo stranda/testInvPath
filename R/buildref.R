@@ -43,7 +43,7 @@ make_ref_table = function(genofile, mname, intros, sources, csvpath=".",
 
 
     obs=summary_stats(gin,meta,dataType,popPairwise=popPairwise)
-
+    names(obs)[grep("*\\.*\\.PhiST",names(obs))] = sapply(strsplit(names(obs)[grep("*\\.*\\.PhiST",names(obs))],"\\."),function(x) {paste(c(sort(c(x[1],x[2])),x[3]),collapse=".")})
     
 
     ## read in simulated summary stats
@@ -60,6 +60,9 @@ make_ref_table = function(genofile, mname, intros, sources, csvpath=".",
     dat=as.data.frame(dat)
     params=dat[,1:(ncol(dat)-length(obs))]
     ref=dat[,(ncol(params)+1):ncol(dat)]
+    ##this line rarranges the pairs in the regionsal phiST comparison.  StrataG is random about this order and this makes the obs and ref columns have the same forms of the names
+    names(ref)[grep("*\\.*\\.PhiST",names(ref))] = sapply(strsplit(names(ref)[grep("*\\.*\\.PhiST",names(ref))],"\\."),function(x) {paste(c(sort(c(x[1],x[2])),x[3]),collapse=".")})
+    
     if (verb) {
         print("dimensions of ref before eliminating bad columns")
         print(dim(ref))
