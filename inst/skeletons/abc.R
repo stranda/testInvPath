@@ -12,7 +12,7 @@ if (length(args) > 0 && !is.na(as.numeric(args[1]))) {
     cores <- 1
 }
 
-
+CalcUntransParams=FALSE
 diagnosticPlot = FALSE
 crossVal = FALSE  #set to true to run (really slow) cross-validations
 source("datafiles.R")
@@ -43,7 +43,7 @@ if (!file.exists(utfn))
 pcafn=paste0(abspath,'/data/pcaRef.RDS')
 if (!file.exists(pcafn))
     {
-        pca.ref = make_pca_ref_table(untrans.ref,prop.variation=0.9)
+        pca.ref = make_pca_ref_table(untrans.ref,prop.variation=0.99)
         saveRDS(file=pcafn,pca.ref)
     } else pca.ref=readRDS(file=pcafn)
 
@@ -195,15 +195,16 @@ if (diagnosticPlot)
 
 
 ################ parameter estimates
-
-paramfn=paste0(abspath,'/data/params_untrans.RDS')
-if (!file.exists(paramfn))
-{
-    post_params_untrans = paramPosteriors(untrans.ref,method=c("loclinear","ridge","neuralnet"),cores=cores,tol=c(0.1,0.01))
-    saveRDS(file=paramfn,post_params_untrans)
-} else post_params_untrans=readRDS(file=paramfn)
-
-
+if (CalcUntransParams)
+    {
+        paramfn=paste0(abspath,'/data/params_untrans.RDS')
+        if (!file.exists(paramfn))
+        {
+            post_params_untrans = paramPosteriors(untrans.ref,method=c("loclinear","ridge","neuralnet"),cores=cores,tol=c(0.1,0.01))
+            saveRDS(file=paramfn,post_params_untrans)
+        } else post_params_untrans=readRDS(file=paramfn)
+        
+    }
 
 
 paramfn=paste0(abspath,'/data/params_pca.RDS')
@@ -224,12 +225,13 @@ for (n in names(post_params_pca))
 
 
 ##Plot untransformed summary stats-based parameter estimates
-
+if (CalcUntransParams)
+{
 for (n in names(post_params_pca))
      {
          pdf(file=paste0(abspath,"/figs/",n,"_param_est.pdf"))
          plot(post_params_untrans[[n]],untrans.ref$params[,1:14],ask=F)
          dev.off()
      }
-
+}
 
