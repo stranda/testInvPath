@@ -43,9 +43,9 @@ make_ref_table = function(genofile, mname, intros, sources, csvpath=".",
 
 
     obs=summary_stats(gin,meta,dataType,popPairwise=popPairwise)
-
-    
-
+    names(obs)[grep("*\\.*\\.PhiST",names(obs))] = sapply(strsplit(names(obs)[grep("*\\.*\\.PhiST",names(obs))],"\\."),function(x) {paste(c(sort(c(x[1],x[2])),x[3]),collapse=".")})
+    obs=obs[order(names(obs))]
+print(length(obs))    
     ## read in simulated summary stats
 
     files = list.files(path=csvpath,pattern="*.csv")
@@ -56,10 +56,17 @@ make_ref_table = function(genofile, mname, intros, sources, csvpath=".",
         print(f)
         dat=rbind(dat,data.table::fread(paste0(csvpath,'/',f)))
     }
-
+print("this far")
     dat=as.data.frame(dat)
     params=dat[,1:(ncol(dat)-length(obs))]
     ref=dat[,(ncol(params)+1):ncol(dat)]
+    ##this line rarranges the pairs in the regionsal phiST comparison.  StrataG is random about this order and this makes the obs and ref columns have the same forms of the names
+    names(ref)[grep("*\\.*\\.PhiST",names(ref))] = sapply(strsplit(names(ref)[grep("*\\.*\\.PhiST",names(ref))],"\\."),function(x) {paste(c(sort(c(x[1],x[2])),x[3]),collapse=".")})
+    ref = ref[,order(names(ref))]
+
+    print(dim(ref))
+    
+    print(names(obs)%in%names(ref))
     if (verb) {
         print("dimensions of ref before eliminating bad columns")
         print(dim(ref))
@@ -72,6 +79,9 @@ make_ref_table = function(genofile, mname, intros, sources, csvpath=".",
         print("invariant columns")
         print(invCol)
     }
+
+    print("this far 2")
+    
     if (length(invCol)>0)
     {
         ref=ref[,-invCol]
@@ -95,6 +105,7 @@ make_ref_table = function(genofile, mname, intros, sources, csvpath=".",
         ref = data.frame(ref) [,!badcols]
         obs = data.frame(t(obs [!badcols]))
 
+        print("this far 3")
     if (verb)
     {
         print(summary(ref))
@@ -115,21 +126,22 @@ make_ref_table = function(genofile, mname, intros, sources, csvpath=".",
 
     ##create the composite model
     params$compositeModel=as.numeric(paste0(params$introModel,".",params$SimulIntro))
-    
+            print("this far 4")
     nobs=obs
+    print(names(obs)==names(ref))
     if (scale.var)
     {
         rscale=apply(rbind(obs,ref),2,scale)
-        #check that scaling didnt introduce Na
+        print("this far 5")
+
+        ##check that scaling didnt introduce Na
         naCol = apply(rscale,2,function(x){sum((!is.finite(x)))})>0 
         rscale=rscale[,!naCol]
         nobs=data.frame(t(rscale[1,]))
         ref=data.frame(rscale[-1,])
         rm(rscale)
     }
-
-    
-    names(nobs)=names(ref)
+#    names(nobs)=names(ref)
     list(obs=nobs, params=data.frame(params), ref=ref, scale.var=scale.var)
 
 }
