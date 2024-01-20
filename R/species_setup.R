@@ -147,7 +147,7 @@ species_setup <- function(root="test",fas=NULL,indmeta=NULL,genofile=NULL,mname=
     
         cat(file=paste0(newdir,"/src/datafiles.R"),append=T,paste0("dataType='",dataType,"' #type of genetic data\n\n"))
 
-        cat(file=paste0(newdir,"/src/datafiles.R"),append=T,paste0("ploidy='",ploidy,"' #ploidy of loci\n\n"))
+        cat(file=paste0(newdir,"/src/datafiles.R"),append=T,paste0("ploidy=",ploidy," #ploidy of loci\n\n"))
 
         cat(file=paste0(newdir,"/src/datafiles.R"),append=T,paste0("popPairwise=",popPairwise," #caculate pairwise _population_ statistics (regional are retained)\n\n"))
 
