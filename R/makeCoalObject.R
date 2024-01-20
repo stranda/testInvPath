@@ -266,23 +266,21 @@ createCoalObject <- function(params,priors,demeN=0,demeI=0)
                  },
                  "microsatellite" = {
                      strataG::fscSettingsGenetics(
-                         strataG::fscBlock_microsat(1,priors$mut_rate,0,chromosome=1),
-                         strataG::fscBlock_microsat(1,priors$mut_rate,0,chromosome=2),
-                         strataG::fscBlock_microsat(1,priors$mut_rate,0,chromosome=3),
-                         strataG::fscBlock_microsat(1,priors$mut_rate,0,chromosome=4),
-                         strataG::fscBlock_microsat(1,priors$mut_rate,0,chromosome=5),
-                         strataG::fscBlock_microsat(1,priors$mut_rate,0,chromosome=6),
-                         strataG::fscBlock_microsat(1,priors$mut_rate,0,chromosome=7),
-                         strataG::fscBlock_microsat(1,priors$mut_rate,0,chromosome=8),
-                         strataG::fscBlock_microsat(1,priors$mut_rate,0,chromosome=9),
-                         strataG::fscBlock_microsat(1,priors$mut_rate,0,chromosome=10)
+                         strataG::fscBlock_microsat(1,priors$mut_rate,0,chromosome=1)
                      )
                  },
                  {
                    # Default action in case no match is found
                    stop("params$dataType must be 'sequence', 'snp', or 'microsatellite'")
                  }
-)
+                 )
+    if (params$dataType=="microsatellite") #we are going to set the correct number of genetic loci now
+    {
+        nl=getNumLoci(params$gin)
+        genetics=genetics[rep(1,nl),]
+        genetics$chromosome=c(1:nl)
+    }
+    
 
 ##now assemble all of the components into a single set of parameters and return
 

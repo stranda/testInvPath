@@ -43,7 +43,7 @@ species_setup(root="/home/astrand/GoogleDrive/data/Oyster/gigas-popgen/ABC_input
 
 ##Gracillaria_vermiculophylla_SSR
 
-species_setup(root="/home/astrand/GoogleDrive/data/Oyster/gigas-popgen/ABC_input/Gracilaria_vermiculophylla_SSR/",genofile="gverm_usat_byPop_gtype",mname="gverm_meta.csv",newdir="/home/astrand/tmp/gvermSSR",species="Gracilaria_vermiculophylla_SSR",dataType="microsatellite",fsc_exec="fsc27")
+species_setup(root="/home/astrand/GoogleDrive/data/Oyster/gigas-popgen/ABC_input/Gracilaria_vermiculophylla_SSR/",genofile="gverm_usat_byPop_gtype",mname="gverm_meta.csv",newdir="/opt/data1/oyster/introduced/gvermSSR",species="Gracilaria_vermiculophylla_SSR",dataType="microsatellite",fsc_exec="fsc27",popPairwise=TRUE)
 
 
 ##Gracillaria_vermiculophylla_SNP
@@ -57,11 +57,8 @@ species_setup(root="/home/astrand/GoogleDrive/data/Oyster/gigas-popgen/ABC_input
                                                         c("kag","hon","tok","hok"))
                                           ))
 
-
-
 ##Gracillaria_vermiculophylla_mtDNA
-
-species_setup(root="/home/astrand/GoogleDrive/data/Oyster/gigas-popgen/ABC_input/Gracilaria_vermiculophylla_mtDNA/",fas="gvermMTDNA.606ind.fas",indmeta="gvermMTDNA.606ind.csv",mname="gverm_meta.csv",newdir="/home/astrand/tmp/gvermMTDNA",species="Gracilaria_vermiculophylla_mtDNA",dataType="sequence",fsc_exec="fsc27")
+species_setup(root="/home/astrand/GoogleDrive/data/Oyster/gigas-popgen/ABC_input/Gracilaria_vermiculophylla_mtDNA/",fas="gvermMTDNA.606ind.fas",indmeta="gvermMTDNA.606ind.csv",mname="gverm_meta.csv",newdir="/opt/data1/oyster/introduced/gvermMTDNA",species="Gracilaria_vermiculophylla_mtDNA",dataType="sequence",fsc_exec="fsc27",popPairwise=TRUE)
 
 
 ##
