@@ -7,14 +7,16 @@
 #' @param newdir path to the new directory to set things up for a species
 #' @param species the name of the species under consideration
 #' @param dataType type of data ("sequence", "snp", "microsatellite")
+#' @param ploidy if microsatellite always set to 2.  Otherwise 1 unless overridden.  for sequences, the adjustment is ploidy*sample.size for the number sampled per deme.
 #' @param nativeTopology a named matrix describing the topology and relative times for the history of a species in the native range.  If null defaults to output of function nativeHistory()
 #' @param fsc_exec executable for fastsimcoal
 #' @export
-species_setup <- function(root="test",fas=NULL,indmeta=NULL,genofile=NULL,mname=NULL,newdir=NULL,dataType="sequence",species="test",nativeTopology=NULL,fsc_exec="fsc27",popPairwise=FALSE,use.seqgen=FALSE)
+species_setup <- function(root="test",fas=NULL,indmeta=NULL,genofile=NULL,mname=NULL,newdir=NULL,dataType="sequence",species="test",nativeTopology=NULL,fsc_exec="fsc27",popPairwise=FALSE,use.seqgen=FALSE,ploidy=1)
 {
     if (is.null(fas)&is.null(genofile)) stop("there has to be some genetic data")
     if (is.null(mname)) stop("the genetic data must be accompanied by metadata linking populatins to strata")
 
+    if (dataType=="microsatellite") ploidy=2
 
     if (!is.null(fas))
     {
@@ -143,7 +145,9 @@ species_setup <- function(root="test",fas=NULL,indmeta=NULL,genofile=NULL,mname=
 
     cat(file=paste0(newdir,"/src/datafiles.R"),append=T,"nativeTopology=",capture.output(dput(nativeTopology,file="")),"\n\n")
     
-    cat(file=paste0(newdir,"/src/datafiles.R"),append=T,paste0("dataType='",dataType,"' #type of genetic data\n\n"))
+        cat(file=paste0(newdir,"/src/datafiles.R"),append=T,paste0("dataType='",dataType,"' #type of genetic data\n\n"))
+
+        cat(file=paste0(newdir,"/src/datafiles.R"),append=T,paste0("ploidy='",ploidy,"' #ploidy of loci\n\n"))
 
         cat(file=paste0(newdir,"/src/datafiles.R"),append=T,paste0("popPairwise=",popPairwise," #caculate pairwise _population_ statistics (regional are retained)\n\n"))
 

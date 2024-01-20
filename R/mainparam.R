@@ -13,6 +13,7 @@
 #' @param intros the introduced regions (must have a sample in each of these regions)
 #' @param exclude source populations to exclude from analysis (ususally nonsource)
 #' @param dataType the type of genetic data (found in datafile.R)
+#' @param ploidy must be 2 for SSR defaults to 1 otherwise. If 2 and not SSR double sample size per deme
 #' @param fsc_exec name of the fastsimcoal executable
 #'
 #' @description The sources and intros are calculated when you run the

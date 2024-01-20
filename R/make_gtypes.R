@@ -10,9 +10,9 @@ fasta2gin = function(fas=NULL,indmeta=NULL)
         lmeta = read.csv(mn)
 #        print(head(lmeta))
         rownames(lmeta)=lmeta$indID
-        fas=strataG::read.fasta(fas)
+        fasdat=strataG::read.fasta(fas)
 #print("converting fasta to gtype in the next line")        
-        g = strataG::sequence2gtypes(fas)
+        g = strataG::sequence2gtypes(fasdat)
         
 #        print(getIndNames(g))
 
