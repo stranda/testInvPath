@@ -76,7 +76,7 @@ createCoalObject <- function(params,priors,demeN=0,demeI=0)
         print("there are pops in meta that are not ghosts and also have no sample")
 
     ##alter poptbl to reflect the ghosts created above
-    ghosts=rep(0,sum(grepl("ghost",meta$longpop)))
+     ghosts=rep(0,sum(grepl("ghost",meta$longpop)))
     names(ghosts)=meta$longpop[grepl("ghost",meta$longpop)]
     ghosts=as.table(ghosts)
     poptbl=c(poptbl,ghosts)
