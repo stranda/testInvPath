@@ -69,8 +69,8 @@ createCoalObject <- function(params,priors,demeN=0,demeI=0)
     itbl = apply(itbl,2,function(x){x/sum(x)})
 #    print(dim(itbl))
     itbl[is.na(itbl)]=0
-    
-    poptbl = as.table(params$samples[,2])
+    plmult = ifelse((params$dataType=="sequence")&(params$ploidy==2),2,1)
+    poptbl = as.table(params$samples[,2]*plmult)
     names(poptbl)=params$samples[,1]
     if (length(poptbl)!=sum(!grepl("ghost",meta$longpop)))
         print("there are pops in meta that are not ghosts and also have no sample")
@@ -84,7 +84,7 @@ createCoalObject <- function(params,priors,demeN=0,demeI=0)
     demes = strataG::fscSettingsDemes(do.call(rbind,lapply(names(poptbl),function(p)
     {
         strataG::fscDeme(deme.size=ifelse(meta$intro[meta$longpop==p],priors$introNe,priors$nativeNe),
-                sample.size=ifelse((params$dataType=="sequence")&(params$ploidy==2),poptbl[p]*2,poptbl[p]),
+                sample.size=poptbl[p],
                 growth=ifelse(meta$intro[meta$longpop==p],priors$IntroGrow,0))
     }
     )),ploidy=ifelse(params$dataType=="sequence",1,2))

@@ -53,11 +53,13 @@ setupReps = function(mname,genofile,native_range_topology=NULL,
                      equalSourceTbl=equalSourceTbl(intros,sources)
                      )
 
-    simparams = list(gin=gin, species=params$species, meta=meta,introTbls=introTbls,
-                     native_range_topology=native_range_topology,demeN=params$demeN,
-                     demeI=params$demeI,samples=samples,dataType=params$dataType,
-                     fsc_exec=params$fsc_exec,cores=params$cores, nreps=params$nreps,
+    simparams = list(gin=gin, species=params$species, meta=meta,
+                     introTbls=introTbls,
+                     native_range_topology=native_range_topology,
+                     demeN=params$demeN,
+                     demeI=params$demeI,samples=samples,
+                     dataType=params$dataType,ploidy=params$ploidy,
+                     fsc_exec=params$fsc_exec,cores=params$cores,
+                     nreps=params$nreps,
                      popPairwise=params$popPairwise)
-
-    
 }
