@@ -449,18 +449,17 @@ summary_stats_microsatellite = function(gin,meta,popPairwise=FALSE)
     meta$intro = ifelse(meta$source %in% c("PNW","Cali","EU"),T,F)
     overallHet = mean(heterozygosity(gin)[,2])
     names(overallHet)="overallHet"
+    longpops=getStrata(gin)
+#    if (sum(grepl("/",getIndNames(gin)))==length(getIndNames(gin)))
+#    {
+#        longpops=getStrata(gin)
+#    } else {
+#        longpops=gsub("[0-9]+","",getIndNames(gin))#sapply(strsplit(getIndNames(gin),"_"),function(x) x[3])
+#    }
 
-    if (sum(grepl("/",getIndNames(gin)))==length(getIndNames(gin)))
-    {
-        longpops=getStrata(gin)
-    } else {
-        longpops=gsub("[0-9]+","",getIndNames(gin))#sapply(strsplit(getIndNames(gin),"_"),function(x) x[3])
-    }
-    
-
-names(longpops) = getIndNames(gin)
-orig.strata = getStrata(gin)
-setStrata(gin) = longpops
+#names(longpops) = getIndNames(gin)
+#orig.strata = getStrata(gin)
+#setStrata(gin) = longpops
 popHet = with(heterozygosity(gin,by.strata=T),aggregate(cbind(exptd.het=exptd.het),by=list(stratum=stratum),mean))[,2]
 
 names(popHet) = paste0(meta$pop,"Het")
