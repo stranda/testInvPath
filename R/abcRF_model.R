@@ -33,7 +33,7 @@ modelRF = function(refobj,
     ref = ref2RF(refobj, modelColumn)
     abcrf(modelIndex~.,data=ref,
           group=list(shipping=c("1","2"),gigas=c("3","4")),
-          paral=ifelse(cores>1,T,F),ncores=cores)
+          paral=ifelse(cores>1,T,F),ncores=cores,...)
 }
 
 #' Predict Using ABC Random Forest Model
