@@ -1,7 +1,7 @@
 Package: testInvPath
 Type: Package
 Title: System for testing invasion hypotheses
-Version: 1.1.0
+Version: 1.1.1
 Date: 2023-07-17
 Author: Allan Strand
 Maintainer: Allan Strand <stranda@cofc.edu>

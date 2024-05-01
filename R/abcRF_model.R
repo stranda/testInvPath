@@ -1,3 +1,5 @@
+
+#############
 #' ref2RF Utility Function
 #'
 #' This internal function converts reference objects for Random Forest.
@@ -22,18 +24,19 @@ ref2RF = function(refobj,modelColumn)
 #' @param refobj A reference object.
 #' @param modelColumn A string specifying the model column. Default is "introModel".
 #' @param cores An integer specifying the number of cores to use. Default is 1.
-#' @param ... Additional arguments.
+#' @param group group specification for abcrf default 'list()'
 #'
 #' @return An ABC Random Forest model.
 #' @export
 modelRF = function(refobj,
                    modelColumn="introModel",
-                   cores=1,...)
+                   cores=1,group=list())
 {
+    print("in modelRF")
     ref = ref2RF(refobj, modelColumn)
     abcrf(modelIndex~.,data=ref,
-          group=list(shipping=c("1","2"),gigas=c("3","4")),
-          paral=ifelse(cores>1,T,F),ncores=cores,...)
+          group=group,
+          paral=ifelse(cores>1,T,F),ncores=cores)
 }
 
 #' Predict Using ABC Random Forest Model
@@ -53,7 +56,7 @@ predRFmodel = function(rfFit, refobj, modelColumn="introModel",cores=1)
     predict(rfFit,obs=refobj$obs,ref,
             paral=ifelse(cores>1,T,F),ncores=cores,
             paral.predict=ifelse(cores>1,T,F),ncores.predict=cores,
-            ntree=5000)
+            ntree=10000)
 }
 
 #' Plot ABC Random Forest Model
@@ -88,3 +91,11 @@ errRFmodel = function(rfFit, refobj, modelColumn="introModel",cores=1)
     ref = ref2RF(refobj, modelColumn)
     err.abcrf(rfFit,ref, paral=ifelse(cores>1,T,F),ncores=cores )
 }
+
+
+
+
+
+
+
+
