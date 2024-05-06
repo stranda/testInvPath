@@ -61,6 +61,8 @@ runABCpriorRep = function(probShip=0.5,     #prior prob of shipping
 
 
     ### start calcing!!
+
+print(paste("untransfile name",utfn))
     if (!file.exists(utfn))
     {
         untrans.ref=make_ref_table(genofile=genofile,
@@ -76,7 +78,10 @@ runABCpriorRep = function(probShip=0.5,     #prior prob of shipping
 ##########################
 ##
 ## pca transform the reference table and observations
-##
+    ##
+print(paste("pca ref 
+file name",pcafn))
+    
 if (!file.exists(pcafn))
     {
         pca.ref = make_pca_ref_table(untrans.ref,prop.variation=0.99)
@@ -343,7 +348,11 @@ runABCgroupRep = function(probShip = 0.5,     #prior prob of shipping
     mname=paste(abspath,mname,sep='/')
 
 
+
+    
     ### start calcing!!
+
+
     if (!file.exists(utfn))
     {
         untrans.ref=make_ref_table(genofile=genofile,
